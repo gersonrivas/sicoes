@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="396a117f-3b10-453c-8271-38e0aa2ce6e9">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SEDE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PERIODO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LOGO" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT 
+  inscripcion_alumno.periodo, 
+  alumno.cedula, 
+  alumno.apellidos, 
+  alumno.nombres, 
+  inscripcion_alumno.estatus, 
+  to_char(inscripcion_alumno.fec_hor_act, 'DD/MM/YYYY HH24:MI:SS') AS fec_hor_act,
+  alumno.sede, 
+  alumno.id_especial, 
+  especialidad."Id", 
+  especialidad.nomb_espec, 
+  turno.nomb_turno, 
+  alumno.id_turno
+FROM 
+  public.inscripcion_alumno, 
+  public.alumno, 
+  public.especialidad, 
+  public.turno
+WHERE 
+  inscripcion_alumno.estatus = 'C' AND
+  alumno.cedula = inscripcion_alumno.cedula AND
+  alumno.id_especial = especialidad."Id" AND
+  alumno.id_turno = turno."Id" AND
+  alumno.sede = $P{SEDE} AND
+  inscripcion_alumno.periodo = $P{PERIODO}
+ORDER BY alumno.cedula;]]>
+	</queryString>
+	<field name="periodo" class="java.lang.String"/>
+	<field name="cedula" class="java.lang.Long"/>
+	<field name="apellidos" class="java.lang.String"/>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="estatus" class="java.lang.String">
+		<fieldDescription><![CDATA[Estatus de la Inscripción.  Ejemplo: A=Inscripción Administrativa Solamente, C=Inscripción Académica realizada por el Alumno y V=Inscripción Validada por Registro y Control.]]></fieldDescription>
+	</field>
+	<field name="fec_hor_act" class="java.lang.String">
+		<fieldDescription><![CDATA[Fecha y hora de la última actualización.]]></fieldDescription>
+	</field>
+	<field name="sede" class="java.lang.String">
+		<fieldDescription><![CDATA[Sede a la cual pertenece Ej: HO=La Hoyada, SG=Sabana Grande.]]></fieldDescription>
+	</field>
+	<field name="id_especial" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Identificador de la Especialidad.]]></fieldDescription>
+	</field>
+	<field name="Id" class="java.lang.Long"/>
+	<field name="nomb_espec" class="java.lang.String">
+		<fieldDescription><![CDATA[Nombre de la Especialidad]]></fieldDescription>
+	</field>
+	<field name="nomb_turno" class="java.lang.String"/>
+	<field name="id_turno" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Identificador del horario.]]></fieldDescription>
+	</field>
+	<variable name="nomb_espec_1" class="java.lang.Integer" resetType="Group" resetGroup="GrupoEspecialidad" calculation="Count">
+		<variableExpression><![CDATA[$F{nomb_espec}]]></variableExpression>
+	</variable>
+	<variable name="nomb_turno_1" class="java.lang.Integer" resetType="Group" resetGroup="GrupoTurno" calculation="Count">
+		<variableExpression><![CDATA[$F{nomb_turno}]]></variableExpression>
+	</variable>
+	<variable name="cedula_1" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{cedula}]]></variableExpression>
+	</variable>
+	<group name="GrupoEspecialidad">
+		<groupExpression><![CDATA[$F{nomb_espec}]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<textField>
+					<reportElement x="4" y="0" width="233" height="20" uuid="dfd2336a-7372-4cbb-b5a8-a3111dbf002e"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["Total " + $F{nomb_espec}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="GrupoEspecialidad">
+					<reportElement x="243" y="0" width="100" height="20" uuid="2fb33cce-fbc4-4e66-910b-25a188cb7825"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{nomb_espec_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="GrupoTurno">
+		<groupExpression><![CDATA[$F{nomb_turno}]]></groupExpression>
+		<groupHeader>
+			<band height="24">
+				<textField>
+					<reportElement x="102" y="3" width="135" height="20" uuid="d27bb21d-e916-4f14-b2a4-b451ec56357a"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["Total turno "+$F{nomb_turno}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="GrupoTurno">
+					<reportElement x="243" y="3" width="100" height="20" uuid="106612c8-60c4-4068-a816-2d4b84619b6e"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{nomb_turno_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="46" splitType="Stretch">
+			<staticText>
+				<reportElement x="138" y="3" width="291" height="20" uuid="34ebab07-73c4-4115-991a-1ee505e5c480"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reporte de Inscripciones]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="488" y="3" width="65" height="20" uuid="4078b416-5e52-40df-bb80-6b5727072dbc"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="288" y="23" width="141" height="20" uuid="d1406c58-a7fe-4512-be75-60b4a0bb0159"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{periodo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="182" y="23" width="100" height="20" uuid="9c7f97fa-bf6c-4b98-aebb-4dcc624b9b54"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Periodo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="450" y="3" width="38" height="20" uuid="7e56edb4-e606-4799-8bac-c7dd383a8300"/>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<image>
+				<reportElement x="10" y="3" width="128" height="40" uuid="6ed72e94-ff09-4b72-90c0-b9bc0706f2ea"/>
+				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="12" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="27" splitType="Stretch">
+			<rectangle>
+				<reportElement x="2" y="4" width="88" height="20" uuid="76d55cec-9121-4156-9b2f-06d9df5f1401"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="27" y="5" width="36" height="20" uuid="f59be95c-9564-4000-bed8-3dc957df44af"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Cédula]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="93" y="4" width="145" height="20" uuid="8d5e0fa2-9afe-404f-8150-e1fb9305a4eb"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="138" y="4" width="51" height="20" uuid="efbb9130-97c7-4095-bee2-9c80fb3b168c"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Apellidos]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="241" y="4" width="145" height="20" uuid="84a41076-0a03-47bf-9e74-2221501d7bda"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="285" y="5" width="51" height="20" uuid="5694b04c-2bc3-4c76-b51f-e5c25e15f625"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Nombres]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="388" y="4" width="164" height="20" uuid="83671641-edbd-4670-8ced-c7ae0bbd90bb"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="410" y="4" width="108" height="20" uuid="aaa35c56-ee42-4113-96e2-0d6bd87443b6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Fecha y hora]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="26" splitType="Stretch">
+			<textField pattern="#,###">
+				<reportElement x="0" y="2" width="90" height="20" uuid="c31b4ed8-1a9d-419a-a81e-d07e6e8e4bf5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{cedula}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="92" y="2" width="145" height="20" uuid="63b1bc4e-c964-4c91-92f6-48ed71cfc6b8"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{apellidos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="242" y="2" width="145" height="20" uuid="7281873d-c092-4871-988c-65a0c41a705c"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="388" y="2" width="164" height="20" uuid="a7f1cd14-a16f-44ea-bc66-966db6639c9e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[""+$F{fec_hor_act}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="322" y="2" width="196" height="20" uuid="53e5333d-e8d5-4b8d-a3c2-7da5dbd00c60"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="521" y="0" width="32" height="20" uuid="916e6a2e-c430-4f05-9b5c-0537d36fc4c0"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="450" y="0" width="100" height="20" uuid="f192c516-ed68-44b1-ab85-b0378494f25d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{cedula_1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="367" y="0" width="78" height="20" uuid="5de46d5c-ee8d-43f9-bb53-305dd6432791"/>
+				<text><![CDATA[Total General:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>
