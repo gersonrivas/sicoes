@@ -1,0 +1,29 @@
+$(function(){
+
+    $(document).ready(function(){
+    $("#miboton").click(function(){
+    $("#framePrincipal").html("Nuevo contenido de la capa");
+    });
+    });
+    
+    function Enviar(_pagina,capa) {
+var ajax;
+ajax = ajaxFunction();
+
+ajax.open("POST", _pagina, true);
+
+ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+ajax.onreadystatechange = function()
+{
+
+if (ajax.readyState == 4)
+{
+if (ajax.status==200)
+{
+document.getElementById(capa).innerHTML = ajax.responseText;
+
+}}}
+ajax.send(null);
+}
+
+});

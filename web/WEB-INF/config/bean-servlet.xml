@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!-- was: <?xml version="1.0" encoding=""?> -->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+ 
+<beans>
+        <!-- Beans para los Controladores de las Vistas. -->
+	<bean id="loginController" class="com.iupg.sicoes.controlador.LoginController"/>
+	<bean id="principalController" class="com.iupg.sicoes.controlador.PrincipalController"/>
+        <bean id="registerController" class="com.iupg.sicoes.controlador.RegisterController"/>
+        <!--bean id="counterService" class="com.iupg.sicoes.servicio.CounterService" /-->
+        <bean id="expiredController" class="com.iupg.sicoes.controlador.ExpiredController" />
+        <bean id="activarController" class="com.iupg.sicoes.controlador.ActivarController" />
+        <!--bean id="propertyConfigurer" class="com.iupg.sicoes.servicio.ParamConfig" /-->
+        <!-- Registro -->
+        <bean id="reiniciaContrasenaController" class="com.iupg.sicoes.controlador.ReiniciaContrasenaController" />
+        <bean id="inscripcionController" class="com.iupg.sicoes.controlador.InscripcionController" />
+        <!-- Alumnos -->
+        <bean id="consultarInscripcionController" class="com.iupg.sicoes.controlador.ConsultarInscripcionController" />
+        <bean id="retiroInscripcionController" class="com.iupg.sicoes.controlador.RetiroInscripcionController" />
+        <bean id="adicionInscripcionController" class="com.iupg.sicoes.controlador.AdicionInscripcionController" />
+        <!-- Administrador -->
+        <bean id="reporteInscripcionesController" class="com.iupg.sicoes.controlador.ReporteInscripcionesController" />
+        <!-- Profesores -->
+        <bean id="consultarActasNotasController" class="com.iupg.sicoes.controlador.ConsultarActasNotasController" />
+        <bean id="seleccionAsignaturaProfesorController" class="com.iupg.sicoes.controlador.SeleccionAsignaturaProfesorController" />
+        <bean id="cargaNotasProfesorController" class="com.iupg.sicoes.controlador.CargaNotasProfesorController" />
+        <!-- Programación de Horarios de Registro y Control -->
+        <bean id="asignaturaSeccionAulaController" class="com.iupg.sicoes.controlador.AsignaturaSeccionAulaController" />
+        <bean id="horariosProfesorController" class="com.iupg.sicoes.controlador.HorariosProfesorController" />
+        <!-- Registro y Control -->
+        <bean id="recordNotasController" class="com.iupg.sicoes.controlador.RecordNotasController" />
+        <!-- En construcción -->
+        <bean id="construccionController" class="com.iupg.sicoes.controlador.ConstruccionController" />
+        <!-- Fin Beans -->
+                
+        <!-- Beans para capturar parámetros del Properties. -->
+        <bean id="paramBaseDatos" class="com.iupg.sicoes.servicio.ParamBaseDatos"/>
+        <bean id="paramCorreo" class="com.iupg.sicoes.servicio.ParamCorreo"/>
+        <!-- Fin Beans -->
+        
+        <!-- Beans para el manejo de diferentes mensajes en diferentes idiomas -->
+        <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="siteLanguage" />
+        </bean>
+        <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />
+        <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping">
+            <property name="interceptors">
+                <list>
+                    <ref bean="localeChangeInterceptor" />
+                </list>
+            </property>
+        </bean>
+        <!-- Fin Beans -->
+</beans>

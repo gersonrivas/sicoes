@@ -1,0 +1,102 @@
+<%-- 
+    Document   : inscripcion
+    Created on : 03/05/2016, 07:00:18 PM
+    Author     : gerson
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <%@include file="/recursos/includes/estilos.jsp" %>
+        <title>Sistema de Control de Estudios</title>
+    </head>
+    <body>                               
+                        
+        <br></br>
+        
+        <p align="center">Alumno(a) ${usuarioSession}</p>
+        <!--div id="page-wrap" style="border: 1px solid" align="center"-->
+        <!--div id="page-wrap" th:replace="frag_inicial.jsp :: footer"-->
+        <div id="page-wrap" style="border: 2px solid rgb(204, 204, 204);" align="center">
+				
+            <form name="nombre_form" id="id_form" method="post" action="inscripcion.do">
+		<table id="id_table" summary="" border="1" style="width:100%">
+                    <tr>
+                    	<td align="right">
+                            <label for="lblperiodo">Período</label>                  		
+                    	</td>
+                    	<td>
+                            <select name="periodo">
+				<option value="1">I-2015</option>
+				<option value="2">II-2015</option>
+				<option value="3">III-2015</option>
+				</select> 
+                    	</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                    	<td align="right">
+                            <label for="lblturno">Turno</label>                  		
+                    	</td>
+                    	<td>
+                            <select name="turno">
+                                <option value="1">Matutino</option>
+                                <option value="2">Vespertino</option>
+                                <option value="3">Nocturno</option>
+                                <option value="4">Sabatino</option>
+                            </select> 
+                    	</td>
+                        
+                    </tr>
+
+                    <tr>
+                    	<td align="right">
+                            <label for="lblespecialidad">Especialidad</label>                  		
+                    	</td>
+                    	<td>
+                            <label for="especialidad">Gerencia Industrial</label> 
+                    	</td>
+                        
+                    </tr>
+
+                    <tr>
+                    	<td>
+                            <input type="checkbox" name="mat1" value="MAT034 - Matemáticas I" />
+                            <input type="checkbox" name="mat2" value="TEE023 - Técnicas de Estudio" />
+                            <input type="checkbox" name="mat3" value="CON134 - Contabilidad I" />
+                            <input type="checkbox" name="mat4" value="IGE033 - Introducción a la Gerencia" />
+                            <input type="checkbox" name="mat5" value="LYC034 - Lenguaje y Comunicación" />
+                            <input type="checkbox" name="mat6" value="EDS022 - Ecología y Desarrollo Sustentable" />
+                    	</td>
+                    	
+                    	<td>
+                    	
+                    	</td>
+								
+                    </tr>
+
+
+                    <tr>
+                        <td>
+                            
+                        </td>
+                        <td>
+                            
+                        </td>
+
+                    </tr>
+
+                    <tr>         
+
+                    </tr>
+		</table>
+            </form>				
+        </div>
+                    
+    </body>
+    
+</html>
