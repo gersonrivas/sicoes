@@ -24,11 +24,13 @@
         <bean id="consultarActasNotasController" class="com.iupg.sicoes.controlador.ConsultarActasNotasController" />
         <bean id="seleccionAsignaturaProfesorController" class="com.iupg.sicoes.controlador.SeleccionAsignaturaProfesorController" />
         <bean id="cargaNotasProfesorController" class="com.iupg.sicoes.controlador.CargaNotasProfesorController" />
+        <bean id="seleccionProfesorAsignaturaSeccionController" class="com.iupg.sicoes.controlador.SeleccionProfesorAsignaturaSeccionController" />
         <!-- Programación de Horarios de Registro y Control -->
         <bean id="asignaturaSeccionAulaController" class="com.iupg.sicoes.controlador.AsignaturaSeccionAulaController" />
         <bean id="horariosProfesorController" class="com.iupg.sicoes.controlador.HorariosProfesorController" />
         <!-- Registro y Control -->
         <bean id="recordNotasController" class="com.iupg.sicoes.controlador.RecordNotasController" />
+        <bean id="notasProfesorSeccionController" class="com.iupg.sicoes.controlador.NotasProfesorSeccionController" />
         <!-- En construcción -->
         <bean id="construccionController" class="com.iupg.sicoes.controlador.ConstruccionController" />
         <!-- Fin Beans -->
