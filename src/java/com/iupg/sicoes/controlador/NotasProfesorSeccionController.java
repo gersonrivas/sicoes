@@ -124,7 +124,7 @@ public class NotasProfesorSeccionController extends AbstractController {
                             }                            
                  
                             // Armar el cuerpo de la tabla para refrescar lo guardado
-                            String nuevoCuerpo = daoProfesor.BuscarDetalleEvaluacion(daoConexion.ConexionBD());
+                            String nuevoCuerpo = daoProfesor.BuscarDetalleEvaluacion(daoConexion.ConexionBD(),"readonly");
                             misession.setAttribute("detalleEvaluacionSession", nuevoCuerpo);   
                             
                             pagina = "academico/profesor/cargaNotasProfesor";                             
@@ -142,7 +142,7 @@ public class NotasProfesorSeccionController extends AbstractController {
                     String encabezado = daoProfesor.BuscarCabeceraEvaluacion(daoConexion.ConexionBD());
                     misession.setAttribute("encabezadoEvaluacionSession", encabezado);                    
                     
-                    String cuerpo = daoProfesor.BuscarDetalleEvaluacion(daoConexion.ConexionBD());
+                    String cuerpo = daoProfesor.BuscarDetalleEvaluacion(daoConexion.ConexionBD(),"readonly");
                     misession.setAttribute("detalleEvaluacionSession", cuerpo);                    
 
                 }
