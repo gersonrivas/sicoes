@@ -267,7 +267,7 @@ public class DaoProfesor extends Profesor {
     }
     
     
-    public String BuscarDetalleEvaluacion(Connection conexion)  throws SQLException, Exception {
+    public String BuscarDetalleEvaluacion(Connection conexion, String permisoModificar)  throws SQLException, Exception {
         String sql;
 
         String cuerpo = "";
@@ -334,7 +334,7 @@ public class DaoProfesor extends Profesor {
                     
                     if (paramNotas[i].isEmpty()||paramNotas[i].trim().equals(""))
                          cuerpo = cuerpo + "<td align=\"center\"> <input type=\"text\" name=\"" +rs.getString("cedula")+ "\" value=\"\" size=\"2\" align=\"center\" onkeypress=\"return checkDecimal(event);\" maxlength=\"4\" /> </td>";
-                    else cuerpo = cuerpo + "<td align=\"center\"> <input type=\"text\" name=\"" +rs.getString("cedula")+ "\" value=\""+ paramNotas[i].trim() + "\" size=\"2\" align=\"center\" readonly /> </td>";                    
+                    else cuerpo = cuerpo + "<td align=\"center\"> <input type=\"text\" name=\"" +rs.getString("cedula")+ "\" value=\""+ paramNotas[i].trim() + "\" size=\"2\" align=\"center\" "+permisoModificar+" /> </td>";                    
                 }
                 cuerpo = cuerpo + "<td align=\"center\">  <input type=\"text\" name=\"definitivas\" value=\""+rs.getString("definitiva")+"\" size=\"1\" readonly > </td> ";
             }
