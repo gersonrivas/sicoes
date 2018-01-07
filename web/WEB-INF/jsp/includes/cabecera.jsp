@@ -97,7 +97,7 @@
                     out.println("<a href=\"#\">Registros</a>");
                     out.println("<ul>");
                     out.println("<li><a href=\"recordNotas.do\" onclick=opcionMenu(\"opcion1\");>Record de Notas</a></li>");
-                    out.println("<li><a href=\"seleccionProfesorAsignaturaSeccion.do\" onclick=opcionMenu('opcion1');>Notas/Profesor/Sección</a></li>");
+                    out.println("<li><a href=\"seleccionProfesorAsignaturaSeccion.do\" onclick=opcionMenu('opcion1');>Notas</a></li>");
                     out.println("</ul>");
                     out.println("</li>");
                     
