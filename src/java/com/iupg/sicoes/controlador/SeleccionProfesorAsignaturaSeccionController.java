@@ -44,7 +44,8 @@ public class SeleccionProfesorAsignaturaSeccionController extends AbstractContro
             //if (misession.getAttribute("cedula")!=null) {
             if (request.getParameter("cedula")!=null) {                
                 misession.setAttribute("cedulaProfesorSession", request.getParameter("cedula"));                
-                DaoProfesor daoProfesor = new DaoProfesor((String) misession.getAttribute("cedulaProfesorSession"));        
+                //
+                DaoProfesor daoProfesor = new DaoProfesor((String) request.getParameter("cedula"));        
                 
                 if (daoProfesor.BuscarDatosProfesor(daoConexion.ConexionBD())) {
                     misession.setAttribute("nombreProfesorSession",daoProfesor.getApellidos()+" "+daoProfesor.getNombres());
@@ -58,7 +59,7 @@ public class SeleccionProfesorAsignaturaSeccionController extends AbstractContro
                         daoProfesor.setAsignatura(request.getParameter("materia").substring(2, request.getParameter("materia").length()));
                     }
                     
-                    if (!"lbElige".equals(request.getParameter("seccion")) && (!"lbSinAsignatura".equals(request.getParameter("seccion")))) {
+                    if (!"lbElige".equals(request.getParameter("seccion")) && (!"lbSinSeccion".equals(request.getParameter("seccion")))) {
                         daoProfesor.setSeccion(request.getParameter("seccion").substring(2, request.getParameter("seccion").length()));    
                         
                         misession.setAttribute("botonSession","<input name=\"action\" type=\"submit\" id=\"cargar\" value=\"Cargar\" />");
@@ -70,9 +71,11 @@ public class SeleccionProfesorAsignaturaSeccionController extends AbstractContro
 
                     String opcionesMaterias = daoProfesor.BuscarMateriasAsignadas(daoConexion.ConexionBD());
                     misession.setAttribute("materiasProfesorSession", opcionesMaterias);
+                    misession.setAttribute("materiaSeleccionadaProfesorSession", request.getParameter("materia").substring(2, request.getParameter("materia").length()));
                         
                     String opcionesSecciones = daoProfesor.BuscarSeccionesMateriasAsignadas(daoConexion.ConexionBD());
                     misession.setAttribute("seccionesMateriaProfesorSession", opcionesSecciones);
+                    misession.setAttribute("seccionSeleccionadaProfesorSession", request.getParameter("seccion").substring(2, request.getParameter("seccion").length()));
  
                         //Si preciona el botón buscar, cargar o modificar
                         String accion = request.getParameter("action");
@@ -87,8 +90,24 @@ public class SeleccionProfesorAsignaturaSeccionController extends AbstractContro
                                         //mensaje = daoGeneral.EliminarSeccionesFiltradas(daoConexion.ConexionBD());
                                     }                        
                                     break;
+                                
                                 case "Cargar": 
-                                    //mensaje = daoGeneral.AdicionarSeccionFiltrada(daoConexion.ConexionBD());                            
+                                    
+                                    if ((!"lbElige".equals(request.getParameter("materia")))&&(!"lbSinMateria".equals(request.getParameter("materia"))) && (!"lbElige".equals(request.getParameter("seccion")))&&(!"lbSinSeccion".equals(request.getParameter("seccion")))) {
+                                        //Página de carga 
+                                
+                                        String encabezado = daoProfesor.BuscarCabeceraEvaluacion(daoConexion.ConexionBD());
+                                        misession.setAttribute("encabezadoEvaluacionSession", encabezado);
+                                
+                                        String cuerpo = daoProfesor.BuscarDetalleEvaluacion(daoConexion.ConexionBD(),"");
+                                        misession.setAttribute("detalleEvaluacionSession", cuerpo);
+                                
+                                        mensaje = "";
+                                        pagina = "academico/registroControl/cargaNotasProfesorAdmin"; 
+                                    }
+                                    
+                                    
+                                    //mensaje = daoGeneral.AdicionarSeccionFiltrada(daoConexion.ConexionBD());
                                     break;
                                 case "Modificar": 
                                     //mensaje = daoGeneral.AdicionarSeccionFiltrada(daoConexion.ConexionBD());                            
