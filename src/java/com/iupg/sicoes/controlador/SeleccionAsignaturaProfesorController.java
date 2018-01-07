@@ -114,7 +114,7 @@ public class SeleccionAsignaturaProfesorController extends AbstractController {
                                 String encabezado = daoProfesor.BuscarCabeceraEvaluacion(daoConexion.ConexionBD());
                                 misession.setAttribute("encabezadoEvaluacionSession", encabezado);
                                 
-                                String cuerpo = daoProfesor.BuscarDetalleEvaluacion(daoConexion.ConexionBD());
+                                String cuerpo = daoProfesor.BuscarDetalleEvaluacion(daoConexion.ConexionBD(),"readonly");
                                 misession.setAttribute("detalleEvaluacionSession", cuerpo);
                                 
                                 mensaje = "";
