@@ -31,6 +31,7 @@
         <!-- Registro y Control -->
         <bean id="recordNotasController" class="com.iupg.sicoes.controlador.RecordNotasController" />
         <bean id="notasProfesorSeccionController" class="com.iupg.sicoes.controlador.NotasProfesorSeccionController" />
+        <bean id="cargaNotasProfesorAdminController" class="com.iupg.sicoes.controlador.CargaNotasProfesorAdminController" />
         <!-- En construcción -->
         <bean id="construccionController" class="com.iupg.sicoes.controlador.ConstruccionController" />
         <!-- Fin Beans -->
