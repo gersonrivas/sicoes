@@ -54,12 +54,14 @@ public class SeleccionProfesorAsignaturaSeccionController extends AbstractContro
 
                     if (!"lbElige".equals(request.getParameter("periodo")) && (!"lbSinPeriodo".equals(request.getParameter("periodo")))) {
                         daoProfesor.setPeriodo(request.getParameter("periodo").substring(2, request.getParameter("periodo").length()));
-                    }
-                    if (!"lbElige".equals(request.getParameter("materia")) && (!"lbSinAsignatura".equals(request.getParameter("materia")))) {
+                    //}
+                    //if (!"lbElige".equals(request.getParameter("materia")) && (!"lbSinAsignatura".equals(request.getParameter("materia")))) {
                         daoProfesor.setAsignatura(request.getParameter("materia").substring(2, request.getParameter("materia").length()));
-                    }
+
+
+                    //}
                     
-                    if (!"lbElige".equals(request.getParameter("seccion")) && (!"lbSinSeccion".equals(request.getParameter("seccion")))) {
+                    //if (!"lbElige".equals(request.getParameter("seccion")) && (!"lbSinSeccion".equals(request.getParameter("seccion")))) {
                         daoProfesor.setSeccion(request.getParameter("seccion").substring(2, request.getParameter("seccion").length()));    
                         
                         misession.setAttribute("botonSession","<input name=\"action\" type=\"submit\" id=\"cargar\" value=\"Cargar\" />");
