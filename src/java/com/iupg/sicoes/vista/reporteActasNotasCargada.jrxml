@@ -306,6 +306,10 @@ ORDER BY inscripcion_alumno_detalle.cedula;]]>
 				<reportElement x="762" y="0" width="40" height="20" uuid="d67e5078-a9c3-47be-b501-ee7c73d1d261"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="3" y="0" width="143" height="20" uuid="9dd1326b-9dbd-4437-bdae-e0704bb454d6"/>
+				<text><![CDATA[N/A: Nota Apreciativa]]></text>
+			</staticText>
 		</band>
 	</pageFooter>
 	<summary>
