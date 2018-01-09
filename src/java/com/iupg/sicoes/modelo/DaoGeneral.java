@@ -855,7 +855,36 @@ public class DaoGeneral extends General {
         
     }
     
-    
+    /**
+     * Método para validar si hay choque de horario del profesor
+     * 
+     */
+    public boolean HayChoqueHorarioProfesor() {
+        String sql;
+        try {
+            sql = "SELECT cedula FROM profesor_horario ph " +
+                  "INNER JOIN horario h on (ph.id_horario=h.\"Id\") " +
+                  "WHERE ph.cedula = " +
+                  "AND h.dia = '" + dia + "' " +
+                  "AND hora_ini BETWEEN '"+hora_ini+"' AND '"+hora_fin+"';";
+
+            PreparedStatement ps;
+            ps = conexion.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                return true;
+            } else {
+                return false;
+            }
+            //conexion.close();            
+            
+        } catch (Exception e) {
+            //conexion.close();
+            return true;
+        }
+        
+    }
     
      /**
      * Método para adicionar el registro Horarios del profesor.
@@ -867,7 +896,7 @@ public class DaoGeneral extends General {
         String sql;
         
         try {
-              sql = "INSERT " +                    
+            sql = "INSERT " +                    
                     "INTO profesor_horario " +
                     "(cedula, id_mat_espec_aula_secc_tur, id_horario) " +    
                     "(SELECT '"+cedula+"', '"+idMatEspAulSecTur+"',\"Id\" " +
@@ -875,8 +904,8 @@ public class DaoGeneral extends General {
                       "WHERE dia = '" + dia + "' " +
                       "AND hora_ini BETWEEN '"+hora_ini+"' AND '"+hora_fin+"');";
             
-              //System.out.println("INSERT---->"+sql);
-              PreparedStatement ps = conexion.prepareStatement(sql);
+            //System.out.println("INSERT---->"+sql);
+            PreparedStatement ps = conexion.prepareStatement(sql);
             ps.executeUpdate();
         
             conexion.close();
@@ -958,7 +987,7 @@ public class DaoGeneral extends General {
                   "	(SELECT periodo || cod_mat || seccion || aula || sede || id_datos_academ FROM materia_espec_aula_seccion_turno WHERE  \"Id\" ="+ idMatEspAulSecTur +")));";
                     
                         
-            System.out.println("INSERT 1---->"+sql);
+            //System.out.println("INSERT 1---->"+sql);
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.executeUpdate();
                     
@@ -983,8 +1012,6 @@ public class DaoGeneral extends General {
         String sql;
         
         try {                        
-
-                        
             sql = "INSERT " +                    
                   "INTO profesor_horario " +
                   "(cedula, id_mat_espec_aula_secc_tur, id_horario) " +    
@@ -996,9 +1023,8 @@ public class DaoGeneral extends General {
                   "WHERE \"Id\" = "+idMatEspAulSecTur+") AND " +
                   "dia = '" + dia + "' " +
                   "AND hora_ini BETWEEN '"+hora_ini+"' AND '"+hora_fin+"');";
-
             
-            System.out.println("INSERT 2---->"+sql);
+            //System.out.println("INSERT 2---->"+sql);
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.executeUpdate();            
         
