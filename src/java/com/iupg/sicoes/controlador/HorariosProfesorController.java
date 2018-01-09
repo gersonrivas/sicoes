@@ -133,11 +133,15 @@ public class HorariosProfesorController extends AbstractController {
                             break;
                         case "Adicionar":
                             //Para adicionar horarios unificados en todas las especilidades
-                            if (request.getParameter("unificada")==null) {
-                                mensaje = daoGeneral.AdicionarHorarioProfesor(daoConexion.ConexionBD());
+                            if (!daoGeneral.HayChoqueHorarioProfesor()) {
+                                if (request.getParameter("unificada")==null) {
+                                    mensaje = daoGeneral.AdicionarHorarioProfesor(daoConexion.ConexionBD());
+                                } else {
+                                    mensaje = daoGeneral.AdicionarAsignaturaSeccionAulasUnificadas(daoConexion.ConexionBD());
+                                    mensaje = mensaje + daoGeneral.AdicionarHorarioProfesorUnificado(daoConexion.ConexionBD());                            
+                                }
                             } else {
-                                mensaje = daoGeneral.AdicionarAsignaturaSeccionAulasUnificadas(daoConexion.ConexionBD());
-                                mensaje = mensaje + daoGeneral.AdicionarHorarioProfesorUnificado(daoConexion.ConexionBD());                            
+                                mensaje = "Horario coincide para este profesor.";
                             }
                             //mensaje = daoGeneral.AdicionarHorarioProfesor(daoConexion.ConexionBD());                            
                             daoGeneral.setDia(null);
