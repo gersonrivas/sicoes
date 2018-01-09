@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f2fc29cc-3b82-4bff-8693-e4b4e58cb54b">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="59"/>
-	<property name="ireport.y" value="502"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="336"/>
 	<style name="Text Body"/>
 	<style name="table">
 		<box>
@@ -46,7 +46,7 @@
   turno.nomb_turno, 
   especialidad.nomb_espec, 
   inscripcion_alumno.periodo, 
-  to_char(inscripcion_alumno.fec_hor_act, 'DD/MM/YYYY HH24:MI:SS') AS fec_hor_act, 
+  to_char(inscripcion_alumno.fec_hor_act, 'DD/MM/YYYY HH12:MI:SS AM') AS fec_hor_act, 
   inscripcion_alumno_detalle.cod_mat, 
   inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur, 
   materia_espec_aula_seccion_turno.seccion,
@@ -54,7 +54,10 @@
   materia_espec_aula_seccion_turno.aula,
   materia.descrip_mat,
   materia_espec.uc,
-  periodo.fec_ini
+  periodo.fec_ini,
+  horario.dia,
+  MIN(horario.hora_ini) AS hora_ini,
+  MAX(horario.hora_fin) AS hora_fin
 FROM 
   public.alumno, 
   public.especialidad, 
@@ -65,7 +68,9 @@ FROM
   public.materia_espec_aula_seccion_turno, 
   public.usuario,
   public.materia_espec,
-  public.periodo
+  public.periodo,
+  public.horario,
+  public.profesor_horario
 WHERE 
   alumno.id_turno = turno."Id" AND
   alumno.id_especial = especialidad."Id" AND
@@ -76,11 +81,54 @@ WHERE
   usuario."Id" = alumno.id_usu AND
   inscripcion_alumno_detalle.cod_mat = materia.cod_mat AND
   materia_espec.cod_mat = materia.cod_mat AND
-  materia_espec.id_espec = materia_espec_aula_seccion_turno.id_espec AND
+  materia_espec.id_espec = materia_espec_aula_seccion_turno.id_espec AND  
   alumno.cedula = $P{CEDULA} AND
   inscripcion_alumno_detalle.periodo = $P{PERIODO} AND
   inscripcion_alumno_detalle.periodo = periodo.periodo AND
-  inscripcion_alumno_detalle.estatus IN ('I','D');]]>
+  inscripcion_alumno_detalle.estatus IN ('I','D') AND 
+  -- agregado
+  materia_espec_aula_seccion_turno."Id"=inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur AND
+  profesor_horario.id_mat_espec_aula_secc_tur=materia_espec_aula_seccion_turno."Id" AND
+  horario."Id"=profesor_horario.id_horario
+  GROUP BY   alumno.cedula, 
+  alumno.apellidos||', '||alumno.nombres, 
+  alumno.tel_hab, 
+  alumno.tel_ofc, 
+  alumno.tel_cel, 
+  alumno.id_usu, 
+  usuario.ident_correo, 
+  usuario."Id", 
+  turno.nomb_turno, 
+  especialidad.nomb_espec, 
+  inscripcion_alumno.periodo, 
+  to_char(inscripcion_alumno.fec_hor_act, 'DD/MM/YYYY HH12:MI:SS AM'), 
+  inscripcion_alumno_detalle.cod_mat, 
+  inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur, 
+  materia_espec_aula_seccion_turno.seccion,
+  materia_espec_aula_seccion_turno.sede, 
+  materia_espec_aula_seccion_turno.aula,
+  materia.descrip_mat,
+  materia_espec.uc,
+  periodo.fec_ini,
+  horario.dia
+  ORDER BY alumno.cedula, 
+  alumno.apellidos||', '||alumno.nombres, 
+  alumno.tel_hab, 
+  alumno.tel_ofc, 
+  alumno.tel_cel, 
+  alumno.id_usu, 
+  usuario.ident_correo, 
+  usuario."Id", 
+  turno.nomb_turno, 
+  especialidad.nomb_espec, 
+  inscripcion_alumno.periodo, 
+  to_char(inscripcion_alumno.fec_hor_act, 'DD/MM/YYYY HH12:MI:SS AM'), 
+  inscripcion_alumno_detalle.cod_mat, 
+  inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur, 
+  materia_espec_aula_seccion_turno.seccion,
+  materia_espec_aula_seccion_turno.sede, 
+  materia_espec_aula_seccion_turno.aula,
+  materia.descrip_mat;]]>
 	</queryString>
 	<field name="cedula" class="java.lang.Long"/>
 	<field name="apellidos_nombres" class="java.lang.String"/>
@@ -91,27 +139,31 @@ WHERE
 		<fieldDescription><![CDATA[Identificador del usuario con acceso]]></fieldDescription>
 	</field>
 	<field name="ident_correo" class="java.lang.String">
-		<fieldDescription><![CDATA[Identificador de correo]]></fieldDescription>
+		<fieldDescription><![CDATA[Identificador de correo del usuario.]]></fieldDescription>
 	</field>
-	<field name="Id" class="java.lang.Long"/>
+	<field name="Id" class="java.lang.Long">
+		<fieldDescription><![CDATA[Identificador del Usuario]]></fieldDescription>
+	</field>
 	<field name="nomb_turno" class="java.lang.String"/>
 	<field name="nomb_espec" class="java.lang.String">
 		<fieldDescription><![CDATA[Nombre de la Especialidad]]></fieldDescription>
 	</field>
-	<field name="periodo" class="java.lang.String"/>
+	<field name="periodo" class="java.lang.String">
+		<fieldDescription><![CDATA[Período por semestre]]></fieldDescription>
+	</field>
 	<field name="fec_hor_act" class="java.lang.String">
 		<fieldDescription><![CDATA[Fecha y hora de la última actualización.]]></fieldDescription>
 	</field>
 	<field name="cod_mat" class="java.lang.String">
-		<fieldDescription><![CDATA[Código de materia]]></fieldDescription>
+		<fieldDescription><![CDATA[Identificador de la asignatura inscrita]]></fieldDescription>
 	</field>
-	<field name="id_mat_espec_aula_secc_tur" class="java.lang.Long"/>
+	<field name="id_mat_espec_aula_secc_tur" class="java.lang.Long">
+		<fieldDescription><![CDATA[Campo para relacionar con la tabla materia_espec_aula_secccion_turno al horario del profesor.]]></fieldDescription>
+	</field>
 	<field name="seccion" class="java.lang.String">
-		<fieldDescription><![CDATA[Sección donde cursó la asignatura.]]></fieldDescription>
+		<fieldDescription><![CDATA[Sección en que se dicta la asignatura por especialidad.]]></fieldDescription>
 	</field>
-	<field name="sede" class="java.lang.String">
-		<fieldDescription><![CDATA[Sede a la cual pertenece Ej: HO=La Hoyada, SG=Sabana Grande.]]></fieldDescription>
-	</field>
+	<field name="sede" class="java.lang.String"/>
 	<field name="aula" class="java.lang.String">
 		<fieldDescription><![CDATA[Aula]]></fieldDescription>
 	</field>
@@ -119,24 +171,65 @@ WHERE
 		<fieldDescription><![CDATA[Descripción de la Materia]]></fieldDescription>
 	</field>
 	<field name="uc" class="java.lang.Integer"/>
-	<field name="fec_ini" class="java.sql.Date"/>
+	<field name="fec_ini" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[Fecha inicio de activdades académicas.]]></fieldDescription>
+	</field>
+	<field name="dia" class="java.lang.String">
+		<fieldDescription><![CDATA[Día. Ej: lun=Lunes, mar=Martes, mie=Miercoles, jue=Jueves, vie=Viernes y sab=Sábado.]]></fieldDescription>
+	</field>
+	<field name="hora_ini" class="java.sql.Time">
+		<fieldDescription><![CDATA[Hora de inicio del bloque de clase.]]></fieldDescription>
+	</field>
+	<field name="hora_fin" class="java.sql.Time">
+		<fieldDescription><![CDATA[Hora de fin del bloque de clase.]]></fieldDescription>
+	</field>
 	<variable name="fecha_ini" class="java.util.Date">
 		<variableExpression><![CDATA[$F{fec_ini}.toString()]]></variableExpression>
 	</variable>
+	<group name="GrupoHorario">
+		<groupExpression><![CDATA[$F{cod_mat}]]></groupExpression>
+		<groupHeader>
+			<band height="16">
+				<textField>
+					<reportElement x="0" y="1" width="100" height="15" uuid="1d7cbadf-2ef1-46a8-97c4-f95d04c302fb"/>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$F{cod_mat}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="103" y="1" width="300" height="15" uuid="f57ff07a-2648-4695-b2f2-ff7dfdf35981"/>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$F{descrip_mat}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="405" y="1" width="81" height="15" uuid="bd18afdb-3cd1-4b64-b87f-3e32b86cb8df"/>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$F{uc}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="490" y="1" width="63" height="15" uuid="32cd488b-52cc-4efd-b390-824adb21724f"/>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$F{seccion}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="2"/>
+		</groupFooter>
+	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="61" splitType="Stretch">
+		<band height="63" splitType="Stretch">
 			<staticText>
-				<reportElement x="22" y="8" width="512" height="20" uuid="79a12076-7e3a-4c26-8542-2b077596718e"/>
+				<reportElement x="146" y="8" width="254" height="20" uuid="79a12076-7e3a-4c26-8542-2b077596718e"/>
 				<textElement textAlignment="Center">
 					<font isBold="true" isUnderline="false"/>
 				</textElement>
 				<text><![CDATA[INSCRIPCION DE ASIGNATURAS]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="22" y="28" width="512" height="20" uuid="146f765f-e7c3-4aa5-978a-d07549caab2f"/>
+				<reportElement x="146" y="28" width="254" height="20" uuid="146f765f-e7c3-4aa5-978a-d07549caab2f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
@@ -146,6 +239,13 @@ WHERE
 				<reportElement x="4" y="0" width="123" height="61" uuid="7c2db313-b5c0-40ff-83c3-ca6d822e63c8"/>
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
+			<textField pattern="dd/MM/yyyy h:mm:ss a" isBlankWhenNull="false">
+				<reportElement x="410" y="8" width="141" height="20" uuid="a01a2c6f-e2a5-4f82-a9df-1a6652c27a89"/>
+				<textElement textAlignment="Right">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -197,7 +297,7 @@ WHERE
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Fecha Hora]]></text>
+				<text><![CDATA[Fecha Hora de Inscripción]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement x="0" y="59" width="305" height="40" uuid="864189dc-390e-4d20-881a-04d2b6309d5d"/>
@@ -274,8 +374,8 @@ WHERE
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{nomb_espec}]]></textFieldExpression>
 			</textField>
-			<textField pattern="">
-				<reportElement x="315" y="36" width="238" height="15" uuid="a4cdd990-35b6-4c81-b42b-9ad16403bad8"/>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="314" y="36" width="238" height="15" uuid="a4cdd990-35b6-4c81-b42b-9ad16403bad8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{fec_hor_act}]]></textFieldExpression>
 			</textField>
@@ -287,7 +387,7 @@ WHERE
 				<reportElement x="489" y="4" width="64" height="20" uuid="e9231eb3-7b67-48ab-80d1-5a94e0ed39e9"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="493" y="9" width="53" height="20" uuid="11fac002-9ffa-45df-8a4f-feb5f3166113"/>
+				<reportElement x="493" y="9" width="53" height="15" uuid="11fac002-9ffa-45df-8a4f-feb5f3166113"/>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[Sección]]></text>
 			</staticText>
@@ -298,46 +398,54 @@ WHERE
 				<reportElement x="0" y="4" width="100" height="20" uuid="ce9887f5-caf7-46d4-81ca-4fc33e41e8d5"/>
 			</rectangle>
 			<rectangle>
-				<reportElement x="405" y="4" width="81" height="20" uuid="c6502784-7b66-408f-8bdf-998028118aa3"/>
+				<reportElement x="406" y="4" width="80" height="20" uuid="c6502784-7b66-408f-8bdf-998028118aa3"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="433" y="9" width="35" height="19" uuid="a0ba5bc2-e605-4ce7-9763-f4d9a4498603"/>
+				<reportElement x="433" y="9" width="35" height="15" uuid="a0ba5bc2-e605-4ce7-9763-f4d9a4498603"/>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[U.C.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="215" y="9" width="100" height="20" uuid="655c2a1f-98cb-4fb0-a887-9f57791ec5a2"/>
+				<reportElement x="111" y="9" width="283" height="15" uuid="655c2a1f-98cb-4fb0-a887-9f57791ec5a2"/>
 				<textElement textAlignment="Center"/>
-				<text><![CDATA[Asignatura]]></text>
+				<text><![CDATA[Asignatura / Aula / Horario]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="11" y="10" width="78" height="17" uuid="3d49bcf1-b76e-4fb4-90fd-7a9212a6450f"/>
+				<reportElement x="11" y="10" width="78" height="15" uuid="3d49bcf1-b76e-4fb4-90fd-7a9212a6450f"/>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[Código]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="24" splitType="Stretch">
+		<band height="12" splitType="Stretch">
 			<textField>
-				<reportElement x="2" y="2" width="98" height="20" uuid="4c1c6de7-9a1f-485c-9d6d-4540818edda5"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{cod_mat}]]></textFieldExpression>
+				<reportElement x="182" y="0" width="40" height="12" uuid="87bb3c34-83db-48be-9c6e-213d6a218022"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dia}]]></textFieldExpression>
+			</textField>
+			<textField pattern="h:mm a">
+				<reportElement x="225" y="0" width="62" height="12" uuid="893855a3-b1b2-4d1b-828b-4df935d6245b"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hora_ini}]]></textFieldExpression>
+			</textField>
+			<textField pattern="h:mm a">
+				<reportElement x="291" y="0" width="62" height="12" uuid="d157b681-4324-4f70-99db-4374e0277251"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hora_fin}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="101" y="2" width="304" height="20" uuid="ac3618ea-b58c-4892-8f4b-fbc2083674ac"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{descrip_mat}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="488" y="2" width="63" height="20" uuid="0a4cfd98-02c5-49c6-ae96-5cceebfb9178"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{seccion}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="405" y="2" width="83" height="21" uuid="914d2cc9-1a6a-4708-8156-c231c2a39f22"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{uc}]]></textFieldExpression>
+				<reportElement x="138" y="0" width="43" height="12" uuid="5d12f570-3a47-497d-bd02-643e1d64ef91"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{aula}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
