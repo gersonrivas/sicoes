@@ -859,31 +859,26 @@ public class DaoGeneral extends General {
      * Método para validar si hay choque de horario del profesor
      * 
      */
-    public boolean HayChoqueHorarioProfesor() {
-        String sql;
-        try {
-            sql = "SELECT cedula FROM profesor_horario ph " +
-                  "INNER JOIN horario h on (ph.id_horario=h.\"Id\") " +
-                  "WHERE ph.cedula = " +
-                  "AND h.dia = '" + dia + "' " +
-                  "AND hora_ini BETWEEN '"+hora_ini+"' AND '"+hora_fin+"';";
-
-            PreparedStatement ps;
-            ps = conexion.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+    public boolean HayChoqueHorarioProfesor(Connection conexion)  throws SQLException {
+        boolean respuesta = false;
+        String sql = "SELECT ph.cedula FROM profesor_horario ph " +
+                  "INNER JOIN horario h ON (ph.id_horario=h.\"Id\") " +
+                  "INNER JOIN materia_espec_aula_seccion_turno  meast ON (meast.\"Id\"=ph.id_mat_espec_aula_secc_tur) " +
+                  "WHERE ph.cedula = " + cedula +
+                  " AND h.dia = '" + dia + "'" +
+                  " AND (hora_ini BETWEEN '"+hora_ini+"' AND '"+hora_fin+"' OR hora_fin BETWEEN '"+hora_ini+"' AND '"+hora_fin+"')" +
+                  " AND meast.periodo = '"+periodo+"';";
             
-            if (rs.next()) {
-                return true;
-            } else {
-                return false;
-            }
-            //conexion.close();            
-            
-        } catch (Exception e) {
-            //conexion.close();
-            return true;
-        }
+        PreparedStatement ps;
+        System.out.println("sql-->"+sql);
         
+        ps = conexion.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        conexion.close();
+        if (rs.next()) respuesta = true;
+              
+        return respuesta;
     }
     
      /**
