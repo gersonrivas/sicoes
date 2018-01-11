@@ -58,10 +58,12 @@ public class HorariosProfesorController extends AbstractController {
             if (request.getParameter("idMatEspAulSecTurSession")==null) {                
                 daoProfesor.setIdMatEspAulSecTur(Integer.valueOf(misession.getAttribute("idMatEspAulSecTurSession").toString()));
                 daoGeneral.setIdMatEspAulSecTur(Integer.valueOf(misession.getAttribute("idMatEspAulSecTurSession").toString()));
+                daoGeneral.setPeriodo(misession.getAttribute("periodoSeleccionadoSession").toString());
             } else {
                 daoProfesor.setIdMatEspAulSecTur(Integer.valueOf(request.getParameter("idMatEspAulSecTurSession")));
                 daoGeneral.setIdMatEspAulSecTur(Integer.valueOf(request.getParameter("idMatEspAulSecTurSession")));
                 misession.setAttribute("idMatEspAulSecTurSession", request.getParameter("idMatEspAulSecTurSession"));
+                daoGeneral.setPeriodo(request.getParameter("periodoSeleccionadoSession"));
             }
             
             //Para desplegar la tabla de horarios
@@ -133,7 +135,7 @@ public class HorariosProfesorController extends AbstractController {
                             break;
                         case "Adicionar":
                             //Para adicionar horarios unificados en todas las especilidades
-                            if (!daoGeneral.HayChoqueHorarioProfesor()) {
+                            if (!daoGeneral.HayChoqueHorarioProfesor(daoConexion.ConexionBD())) {
                                 if (request.getParameter("unificada")==null) {
                                     mensaje = daoGeneral.AdicionarHorarioProfesor(daoConexion.ConexionBD());
                                 } else {
