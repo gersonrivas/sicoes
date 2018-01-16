@@ -75,6 +75,8 @@
                     out.println("<li><a href=\"construccion.do\" onclick=opcionMenu('opcion1');>Consultar Inscripción</a></li>");
                     out.println("<li><a href=\"construccion.do\" onclick=opcionMenu('opcion1');>Retiro de Asignatura</a></li>");
                     out.println("<li><a href=\"construccion.do\" onclick=opcionMenu('opcion1');>Adición de Asignatura</a></li>");
+                    if (tipoUsuario.equals("S")) out.println("<li><a href=\"eliminarInscripcion.do\" onclick=opcionMenu('opcion1');>Eliminar Inscripción</a></li>");
+                    
                     out.println("</ul>");    
                     out.println("</li>");
                     
