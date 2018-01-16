@@ -42,6 +42,7 @@
                 <prop key="recordNotas.do">recordNotasController</prop>
                 <prop key="notasProfesorSeccion.do">notasProfesorSeccionController</prop>
                 <prop key="cargaNotasProfesorAdmin.do">cargaNotasProfesorAdminController</prop>
+                <prop key="buscarAlumnoCedulaPeriodo.do">buscarAlumnoCedulaPeriodoController</prop>
                 <prop key="construccion.do">construccionController</prop>
             </props>
         </property>
