@@ -82,34 +82,44 @@ public ConsultarInscripcionController() {
                 //Buscar el período inscrito Administrativamente            
                 if ("POST".equals(request.getMethod())) {
                     //Si preciona el botón consultar
-                    
-                    if (request.getParameter("action").equals("Consultar")) {
-                        //aqui voy
-                        if ((!"lbElige".equals(request.getParameter("periodo")))&&(!"lbSinInscripcion".equals(request.getParameter("periodo")))) {
-                            ServletOutputStream out = response.getOutputStream();
-                            String plantilla=ParamConfig.getString("reporte.archivoPlanillaInscripcion");  
-                            File theFile = new File(plantilla);
-                            JasperReport reporte = (JasperReport) JRLoader.loadObject(theFile);
+                    String accion = request.getParameter("action");    
+                    if (accion != null) {
+                        if (request.getParameter("action").equals("Consultar")) {
+                            //aqui voy
+                            if ((!"lbElige".equals(request.getParameter("periodo")))&&(!"lbSinInscripcion".equals(request.getParameter("periodo")))) {
+                                ServletOutputStream out = response.getOutputStream();
+                                String plantilla=ParamConfig.getString("reporte.archivoPlanillaInscripcion");  
+                                File theFile = new File(plantilla);
+                                JasperReport reporte = (JasperReport) JRLoader.loadObject(theFile);
                         
-                            Map<String, Object> parametros = new HashMap();
-                            parametros.put("CEDULA", new Integer(daoAlumno.getCedula()));
-                            parametros.put("PERIODO", new String(request.getParameter("periodo").substring(2, request.getParameter("periodo").length())));
-                            parametros.put("LOGO", new String(ParamConfig.getString("reporte.archivoImagenLogo")));
+                                Map<String, Object> parametros = new HashMap();
+                                parametros.put("CEDULA", new Integer(daoAlumno.getCedula()));
+                                parametros.put("PERIODO", new String(request.getParameter("periodo").substring(2, request.getParameter("periodo").length())));
+                                parametros.put("LOGO", new String(ParamConfig.getString("reporte.archivoImagenLogo")));
                             
-                            JasperPrint print = JasperFillManager.fillReport(reporte, parametros, daoConexion.ConexionBD());
+                                JasperPrint print = JasperFillManager.fillReport(reporte, parametros, daoConexion.ConexionBD());
                         
-                            JRPdfExporter exporter = new JRPdfExporter();
-                            exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
-                            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
-                            exporter.exportReport();
+                                JRPdfExporter exporter = new JRPdfExporter();
+                                exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+                                exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
+                                exporter.exportReport();
+                            }
+                        } else { // Si presiona Botón Salir
+                            mensaje = "";
+                            pagina="principal/principal";
                         }
-                    } else { // Si presiona Botón Salir
-                        mensaje = "";
-                        pagina="principal/principal";
+                    
+                    } else {
+                        daoAlumno.setPeriodo(request.getParameter("periodo").substring(2, request.getParameter("periodo").length()));
+                        String opcionesPeriodo = daoAlumno.BuscarPeriodosInscritos(daoConexion.ConexionBD());
+                        misession.setAttribute("incripcionAlumnoSession", opcionesPeriodo);    
                     }
+                    
                 } else {                    
                     // else del POST                        
                     //Buscar el período inscrito Administrativamente y academicamente
+                    //daoAlumno.setPeriodo(request.getParameter("periodo").substring(2, request.getParameter("periodo").length()));
+                    daoAlumno.setPeriodo("");
                     String opcionesPeriodo = daoAlumno.BuscarPeriodosInscritos(daoConexion.ConexionBD());
                     misession.setAttribute("incripcionAlumnoSession", opcionesPeriodo);
                 }
