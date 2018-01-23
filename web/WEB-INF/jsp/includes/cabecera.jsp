@@ -13,8 +13,7 @@
     <body>        
         
         <% String tipoUsuario = (String) session.getAttribute("tipoUsuSession");      
-        
-        
+                
             if (tipoUsuario!=null) {  
                 // Mostrando el Cintillo
                 out.println("<div id=\"page-wrap\" style=\"border: 0px solid\" align=\"center\">");	
@@ -71,11 +70,10 @@
                     out.println("<li>");
                     out.println("<a href=\"#\">Inscripciones</a>"); 
                     out.println("<ul>");
-                    out.println("<li><a href=\"construccion.do\" onclick=opcionMenu(\"opcion1\");>Crear Inscripción</a></li>");
-                    out.println("<li><a href=\"construccion.do\" onclick=opcionMenu('opcion1');>Consultar Inscripción</a></li>");
+                    
+                    if (tipoUsuario.equals("S")) out.println("<li><a href=\"buscarAlumnoCedulaPeriodoAdmin.do\" onclick=opcionMenu('opcion1');>Inscripción Alumno</a></li>");
                     out.println("<li><a href=\"construccion.do\" onclick=opcionMenu('opcion1');>Retiro de Asignatura</a></li>");
-                    out.println("<li><a href=\"construccion.do\" onclick=opcionMenu('opcion1');>Adición de Asignatura</a></li>");
-                    if (tipoUsuario.equals("S")) out.println("<li><a href=\"buscarAlumnoCedulaPeriodo.do\" onclick=opcionMenu('opcion1');>Eliminar Inscripción</a></li>");
+                    out.println("<li><a href=\"construccion.do\" onclick=opcionMenu('opcion1');>Adición de Asignatura</a></li>");                   
                     
                     out.println("</ul>");    
                     out.println("</li>");
