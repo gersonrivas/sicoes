@@ -511,6 +511,26 @@ public class DaoAlumno extends Alumno {
         ps.executeUpdate();
     }
     
+
+    public String EliminarInscripcionAlumno(Connection conexion) throws SQLException {
+        String sql = "";
+        
+        try {
+            sql=" DELETE FROM inscripcion_alumno_detalle WHERE cedula = "+cedula+" AND periodo = '"+periodo+"'; ";
+            sql=sql+" DELETE FROM inscripcion_alumno WHERE cedula = "+cedula+" AND periodo = '"+periodo+"'; ";
+ 
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ps.executeUpdate();
+        
+            return "Inscripción Eliminada Satisfactoriamente.";
+            
+        } catch (Exception e) {
+            conexion.close();
+            return "Error: Eliminando la Inscripción -->"+e.getMessage();
+        }
+    }
+
+
     /**
      * Método para actualizar el estatus de las materias retiradas y adicionadas.
      * @param conexion
@@ -531,44 +551,52 @@ public class DaoAlumno extends Alumno {
         ps.executeUpdate();
     }
     
-    public String BuscarPeriodosInscritos(Connection conexion)  throws SQLException {
-        String sql;
-        String selectSeccion = "";
-        String optionsSeccion = "";
+    public String BuscarPeriodosInscritos(Connection conexion)  throws SQLException {        
+        String selectPeriodo = "";
+        String optionsPeriodo = "";
         int i=0;
         
-        sql = " SELECT DISTINCT " +
-            " ia.periodo, " +
-            " ia.estatus, " +
-            " ia.cedula " +
-            " FROM " +
-            " public.inscripcion_alumno ia " +
-            " INNER JOIN public.inscripcion_alumno_detalle iad " +
-            " ON (ia.cedula = iad.cedula AND ia.periodo = iad.periodo) " +    
-            " WHERE ia.cedula = '"+cedula+"'; ";
+        selectPeriodo = "<select name=\"periodo\"  onchange=\"form.submit()\" id=\"periodo\" >"; 
+        if (cedula!="" && cedula!=null) { 
+            String sql = " SELECT DISTINCT " +
+                " ia.periodo, " +
+                " ia.estatus, " +
+                " ia.cedula " +
+                " FROM " +
+                " public.inscripcion_alumno ia " +
+                " INNER JOIN public.inscripcion_alumno_detalle iad " +
+                " ON (ia.cedula = iad.cedula AND ia.periodo = iad.periodo) " +    
+                " WHERE ia.cedula = '"+cedula+"'; ";
         
-        PreparedStatement ps;        
-        ps = conexion.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery();
-        
-        selectSeccion = "<select name=\"periodo\" id=\"periodo\" >"; 
-        optionsSeccion =  "<option value=\"lbElige\" selected>Elige";
-        while (rs.next()) {
-            i++;
-            optionsSeccion = optionsSeccion + "<option value=\"lb"+rs.getString("periodo")+"\" >"+rs.getString("periodo");
+            PreparedStatement ps;        
+            ps = conexion.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();        
+            
+            optionsPeriodo =  "<option value=\"lbElige\" selected>Elige";
+            while (rs.next()) {
+                i++;
+                if (periodo.equals(rs.getString("periodo"))) {
+                    optionsPeriodo = optionsPeriodo + "<option value=\"lb"+rs.getString("periodo")+"\" selected>"+rs.getString("periodo");
+                }
+                else {    
+                    optionsPeriodo = optionsPeriodo + "<option value=\"lb"+rs.getString("periodo")+"\" >"+rs.getString("periodo");
+                }
+            }
         }
+        
         if (i==0) {
-            optionsSeccion =  "<option value=\"lbSinInscripcion\" selected>Sin Inscripción";
+            optionsPeriodo =  "<option value=\"lbSinInscripcion\" selected>Sin Inscripción";
         }
-        selectSeccion = selectSeccion + optionsSeccion + "</select>";
+        
+        selectPeriodo = selectPeriodo + optionsPeriodo + "</select>";
 
-        return selectSeccion;
+        return selectPeriodo;
     }
         
     public String BuscarPeriodos(Connection conexion)  throws SQLException {
         String sql;
-        String selectSeccion = "";
-        String optionsSeccion = "";
+        String selectPeriodo = "";
+        String optionsPeriodo = "";
         int i=0;
         
         sql = " SELECT DISTINCT " +
@@ -582,18 +610,18 @@ public class DaoAlumno extends Alumno {
         ps = conexion.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
         
-        selectSeccion = "<select name=\"periodo\" id=\"periodo\" >"; 
-        optionsSeccion =  "<option value=\"lbElige\" selected>Elige";
+        selectPeriodo = "<select name=\"periodo\" id=\"periodo\" >"; 
+        optionsPeriodo =  "<option value=\"lbElige\" selected>Elige";
         while (rs.next()) {
             i++;
-            optionsSeccion = optionsSeccion + "<option value=\"lb"+rs.getString("periodo")+"\" >"+rs.getString("periodo");
+            optionsPeriodo = optionsPeriodo + "<option value=\"lb"+rs.getString("periodo")+"\" >"+rs.getString("periodo");
         }
         if (i==0) {
-            optionsSeccion =  "<option value=\"lbSinInscripcion\" selected>Sin Inscripción";
+            optionsPeriodo =  "<option value=\"lbSinInscripcion\" selected>Sin Inscripción";
         }
-        selectSeccion = selectSeccion + optionsSeccion + "</select>";
+        selectPeriodo = selectPeriodo + optionsPeriodo + "</select>";
 
-        return selectSeccion;
+        return selectPeriodo;
     }
     
     public String BuscarSede(Connection conexion)  throws SQLException {
