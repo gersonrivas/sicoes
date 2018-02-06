@@ -128,7 +128,7 @@
                 // Proceso Administración del Sistema para SuperUsuario
                 //if (tipoUsuario.equals("S")) {
                     out.println(" <li>");
-                    out.println("	<a href=\"construccion.do\">Usuarios</a> ");
+                    out.println("	<a href=\"usuariosAdmin.do\">Usuarios</a> ");
                     out.println(" </li> ");
                     out.println(" <li> ");
                     out.println("	<a href=\"construccion.do\">Respaldos</a> ");
