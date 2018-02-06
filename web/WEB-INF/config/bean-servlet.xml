@@ -33,6 +33,8 @@
         <bean id="notasProfesorSeccionController" class="com.iupg.sicoes.controlador.NotasProfesorSeccionController" />
         <bean id="cargaNotasProfesorAdminController" class="com.iupg.sicoes.controlador.CargaNotasProfesorAdminController" />
         <bean id="buscarAlumnoCedulaPeriodoAdminController" class="com.iupg.sicoes.controlador.BuscarAlumnoCedulaPeriodoAdminController" />
+        <!-- Perfil Administrativo del Sistema -->
+        <bean id="usuariosAdminController" class="com.iupg.sicoes.controlador.UsuariosAdminController" />
         <!-- En construcción -->
         <bean id="construccionController" class="com.iupg.sicoes.controlador.ConstruccionController" />
         <!-- Fin Beans -->
