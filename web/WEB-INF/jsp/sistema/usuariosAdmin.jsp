@@ -57,7 +57,6 @@
                     <table border="1">
                         <thead>
                             <tr align="center">
-                                <th align="center">Id</th>
                                 <th align="center">Usuario</th>
                                 <th align="center">Categoría</th>
                                 <th align="center">Nombres</th>
