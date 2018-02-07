@@ -207,5 +207,145 @@ public class DaoUsuario extends Usuario {
         ps.executeUpdate();        
     }
     
+    /**
+     * Método para buscar las categorias de los usuarios
+     * @param conexion
+     */    
+    public String buscarCategoriasUsuario(Connection conexion) throws SQLException {        
+        String selectCategorias = "";
+        String optionsCategorias = "";
+        boolean existe=false;
+        int i=0;        
+        
+        selectCategorias = "<select name=\"categoria\"  onchange=\"form.submit()\" id=\"categoria\" >"; 
+        
+        String sql = "SELECT " +
+                "  usuario_categ.\"Id\", " +
+                "  usuario_categ.cod_categ, " +
+                "  usuario_categ.descrip " +
+                "FROM " +
+                "  public.usuario_categ; ";            
+        
+            
+            //System.out.println(sql);
+            
+            PreparedStatement ps;        
+            ps = conexion.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();    
+            
+            while (rs.next()) {
+                i++;
+                if (rs.getString("cod_categ").equals(tipoUsu)) {
+                    optionsCategorias = optionsCategorias + "<option value=\"lb"+rs.getString("cod_categ")+"\" selected >"+rs.getString("descrip");
+                    existe=true;
+                } else {
+                    optionsCategorias = optionsCategorias + "<option value=\"lb"+rs.getString("cod_categ")+"\" >"+rs.getString("descrip");
+                }   
+            }
+
+        if (!existe || tipoUsu=="" || tipoUsu==null) {
+            optionsCategorias =  "<option value=\"lbElige\" selected>Elige" + optionsCategorias;
+        }
+        if (i==0) {
+            optionsCategorias =  "<option value=\"lbSinCategoria\" selected>Sin Categoría";
+        }
+        selectCategorias = selectCategorias + optionsCategorias + "</select>";
+
+        return selectCategorias;  
+    }
+
+    public String buscarEstatusUsuario() {        
+        String selectEstatus = "";
+        String optionsEstatus = "";
+        String lista[][] = {{"A","Activo"},
+                            {"I","Inactivo"},
+                            {"B","Bloqueado"}}; 
+        int i=0;        
+        
+        selectEstatus = "<select name=\"estatus\"  onchange=\"form.submit()\" id=\"estatus\" >"; 
+        
+        if (estatus=="" || estatus==null) {
+            optionsEstatus =  "<option value=\"lbElige\" selected>Elige" + optionsEstatus;
+        }
+                
+        for (i = 0; i < lista.length; i++) { //número de filas
+            //for (j = 0; j < lista[i].length; j++) { //número de columnas de cada fila
+                if (lista[i][0].equals(estatus)) {
+                    optionsEstatus = optionsEstatus + "<option value=\"lb"+lista[i][0]+"\" selected >"+lista[i][1];
+                } else {
+                    optionsEstatus = optionsEstatus + "<option value=\"lb"+lista[i][0]+"\" >"+lista[i][1];
+                }
+                //System.out.print(lista[i][j] + " ");
+            //}
+            //System.out.println();
+        }        
+        selectEstatus = selectEstatus + optionsEstatus + "</select>";
+        return selectEstatus;  
+    }    
+    
+    /**
+     * Método que busca los usuarios del Sistema.
+     * @param conexion
+     * @return
+     * @throws SQLException 
+     */
+    public String BuscarListaUsuarios(Connection conexion)  throws SQLException {
+        String sql;
+        String listaUsuarios = "";
+        
+        //Buscar las asignaturas inscritas
+
+        sql = "SELECT " +
+              "u.\"Id\", " +
+              "u.ident_correo, " +
+              "uc.descrip, " +
+              "COALESCE(a.nombres, COALESCE(p.nombres, prc.nombres)) AS nombres, " +
+              "COALESCE(a.apellidos, COALESCE(p.apellidos, prc.apellidos)) AS apellidos, " +
+              "CASE u.estatus " +
+                "WHEN 'A' THEN 'Activo' " +
+                "WHEN 'I' THEN 'Inactivo' " +
+                "WHEN 'B' THEN 'Bloqueado' " +
+                "ELSE 'Sin Estatus' " +
+              "END AS estatus " +
+              "FROM  " +
+              "usuario u " +
+              "INNER JOIN usuario_categ uc ON (uc.cod_categ = u.categ_usu) " +
+              "LEFT OUTER JOIN alumno a ON (a.id_usu = u.\"Id\") " +
+              "LEFT OUTER JOIN pers_reg_ctrl prc ON (prc.id_usu = u.\"Id\") " +
+              "LEFT OUTER JOIN profesor p ON (p.id_usu = u.\"Id\") "+ 
+              "WHERE 1 = 1 ";
+              
+                
+        if (tipoUsu!=null && !tipoUsu.equals("") && !tipoUsu.equals("Elige")){
+            sql = sql + "AND u.categ_usu = '" + tipoUsu +"' ";
+        }
+        
+        if (estatus!=null && !estatus.equals("") && !estatus.equals("Elige")){
+            sql = sql + "AND u.estatus = '" + estatus +"' ";
+        }
+        
+        sql = sql + "ORDER BY nombres, apellidos;";
+        
+        System.out.println("sql USUARIOS--->"+sql);
+
+        PreparedStatement ps;        
+        ps = conexion.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        while (rs.next()) {
+            listaUsuarios = listaUsuarios + "<tr><td align=\"left\">"+rs.getString("ident_correo")+"</td>" +
+                                            "<td align=\"center\">"+rs.getString("descrip")+"</td>" +                                              
+                                            "<td align=\"left\">"+rs.getString("nombres")+"</td>"+
+                                            "<td align=\"left\">"+rs.getString("apellidos")+"</td>"+
+                                            "<td align=\"center\">"+rs.getString("estatus")+"</td>"+
+                                            "<td align=\"center\">Eliminar Modificar</td></tr>";
+        }
+        if (listaUsuarios.equals("")) {
+            listaUsuarios = "<tr><td colspan=\"6\" align=\"center\"> No Hay información.</td></tr>";
+            
+        }
+        conexion.close();
+        return listaUsuarios;
+    }
     
 }
