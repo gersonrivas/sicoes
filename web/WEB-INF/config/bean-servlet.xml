@@ -35,6 +35,7 @@
         <bean id="buscarAlumnoCedulaPeriodoAdminController" class="com.iupg.sicoes.controlador.BuscarAlumnoCedulaPeriodoAdminController" />
         <!-- Perfil Administrativo del Sistema -->
         <bean id="usuariosAdminController" class="com.iupg.sicoes.controlador.UsuariosAdminController" />
+        <bean id="editarUsuarioAdminController" class="com.iupg.sicoes.controlador.EditarUsuarioAdminController" />
         <!-- En construcción -->
         <bean id="construccionController" class="com.iupg.sicoes.controlador.ConstruccionController" />
         <!-- Fin Beans -->
