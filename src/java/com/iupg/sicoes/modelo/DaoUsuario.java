@@ -45,6 +45,28 @@ public class DaoUsuario extends Usuario {
         ps.executeUpdate();
     }
     
+    //Metodo para eliminar un usuario
+    public String EliminarUsuario(Connection conexion) throws SQLException {
+        String sql = "";
+        
+        try {
+            sql= "UPDATE alumno SET id_usu = null WHERE id_usu = '"+idUsu+"'; ";
+            sql= sql+"UPDATE profesor SET id_usu = null WHERE id_usu = '"+idUsu+"'; ";
+            sql= sql+"UPDATE pers_reg_ctrl SET id_usu = null WHERE id_usu = '"+idUsu+"'; ";
+            
+            sql= sql+" DELETE FROM usuario WHERE \"Id\" = '"+idUsu+"'; ";
+ 
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ps.executeUpdate();
+        
+            return "Usuario Eliminado Satisfactoriamente.";
+            
+        } catch (Exception e) {
+            conexion.close();
+            return "Error: Eliminando el Usuario -->"+e.getMessage();
+        }
+    }
+    
     /**
      * Metodo para buscar la cuenta del Usuario por Correo y Contraseña.
      * @param conexion
@@ -121,6 +143,53 @@ public class DaoUsuario extends Usuario {
         }
     }
     
+
+     /**
+     * Metodo para verificar si el usuario está registrado por número de cédula o correo
+     * @param conexion
+     * @param comparadorLogico 
+     * @return
+     * @throws SQLException 
+     */
+    public boolean BuscarUsuarioPorId(Connection conexion) throws SQLException{
+        String sql;
+        sql = "SELECT usuario.\"Id\", " +
+              " usuario.ident_correo, " +
+              " usuario.contrasena, " +
+              " COALESCE(alumno.apellidos, COALESCE(profesor.apellidos,pers_reg_ctrl.apellidos))||' '||COALESCE(alumno.nombres, COALESCE(profesor.nombres,pers_reg_ctrl.nombres)) AS usuario," +
+              " COALESCE(alumno.cedula, COALESCE(profesor.cedula, pers_reg_ctrl.cedula)) as cedula, categ_usu, estatus, " +
+              " COALESCE(alumno.sexo, COALESCE(profesor.sexo,pers_reg_ctrl.sexo)) AS sexo"+
+              " FROM usuario " +
+              " LEFT OUTER JOIN alumno ON (usuario.\"Id\" = alumno.id_usu)" +
+              " LEFT OUTER JOIN profesor ON (usuario.\"Id\" = profesor.id_usu)" +
+              " LEFT OUTER JOIN pers_reg_ctrl ON (usuario.\"Id\" = pers_reg_ctrl.id_usu)" +
+              " WHERE usuario.\"Id\" = '"+idUsu+"';";
+        //sql = "SELECT \"Id\", nombre FROM usuario WHERE ident_correo='"+this.login+"' AND contrasena=md5('"+this.password+"')";
+        //System.out.println(sql);
+        PreparedStatement ps;
+        ps = conexion.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        if (rs.next()) {
+            this.setNombreUsu(rs.getString("usuario"));
+            this.setIdUsu(Integer.parseInt(rs.getString("Id")));
+            this.setTipoUsu(rs.getString("categ_usu"));
+            this.setLogin(rs.getString("ident_correo"));
+            this.setPassword(rs.getString("contrasena"));
+            this.setPassword2(rs.getString("contrasena"));
+            this.setCedula(rs.getString("cedula"));
+            this.setEstatus(rs.getString("estatus"));
+            this.setSexo(rs.getString("sexo"));
+            this.setNombreUsu(rs.getString("usuario"));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
+
     /**
      * Metodo para buscar el tipo de usuario, Alumno, Profesor o Personal Administrativo.
      * @param conexion
@@ -205,6 +274,31 @@ public class DaoUsuario extends Usuario {
         PreparedStatement ps = daoConexion.prepareStatement(sql);
         System.out.println(sql);
         ps.executeUpdate();        
+    }
+    
+    
+    /**
+     * Metodo para actualizar la cuenta de usuario.
+     * @param daoConexion
+     * @throws SQLException 
+     */
+    public String actualizarUsuario(Connection daoConexion) throws SQLException{
+        String sql="";
+        try {
+            sql = "UPDATE usuario SET estatus = '"+ estatus + "'," +
+                "ident_correo = '" + login + "', " +
+                 "contrasena = " + password + ", " +
+                 "categ_usu = '" + tipoUsu + "' " +
+                 "WHERE \"Id\" = " + idUsu + ";";
+        
+        PreparedStatement ps = daoConexion.prepareStatement(sql);
+        System.out.println(sql);
+        ps.executeUpdate();     
+            return "Usuario actualizado Satisfactoriamente.";
+        } catch (Exception e) {
+            conexion.close();
+            return "Error: Eliminando el Usuario -->"+e.getMessage();
+        }
     }
     
     /**
@@ -326,7 +420,7 @@ public class DaoUsuario extends Usuario {
         
         sql = sql + "ORDER BY nombres, apellidos;";
         
-        System.out.println("sql USUARIOS--->"+sql);
+        //System.out.println("sql USUARIOS--->"+sql);
 
         PreparedStatement ps;        
         ps = conexion.prepareStatement(sql);
@@ -338,7 +432,7 @@ public class DaoUsuario extends Usuario {
                                             "<td align=\"left\">"+rs.getString("nombres")+"</td>"+
                                             "<td align=\"left\">"+rs.getString("apellidos")+"</td>"+
                                             "<td align=\"center\">"+rs.getString("estatus")+"</td>"+
-                                            "<td align=\"center\">Eliminar Modificar</td></tr>";
+                                            "<td align=\"center\"><a href=\"editarUsuarioAdmin.do?idUsuarioAdminSession="+rs.getString("Id")+"\">"+"Editar</td></tr>";            
         }
         if (listaUsuarios.equals("")) {
             listaUsuarios = "<tr><td colspan=\"6\" align=\"center\"> No Hay información.</td></tr>";
@@ -348,4 +442,69 @@ public class DaoUsuario extends Usuario {
         return listaUsuarios;
     }
     
+
+    public String formAdminUsuario(Connection conexion) throws SQLException {
+        String formHtml="No Hay Información Asociada...";
+        
+        //if (BuscarUsuarioPorId(conexion, id)) {
+        
+            formHtml = "<tr>" +
+                   "    <th align=\"right\">"+
+                   "        Usuario:&nbsp;"+
+                   "    </th>"+
+                   "    <th>"+
+                   "        <input type=\"email\" name=\"usuario\" value=\""+login+"\">"+
+                   "    </th>"+
+                   "</tr>"+
+                   "<tr>" +
+                   "    <th align=\"right\">"+
+                   "        Nombre del Usuario:&nbsp;"+
+                   "    </th>"+
+                   "    <th>"+
+                   "        "+nombreUsu+
+                   "    </th>"+
+                   "</tr>"+
+                   "<tr>" +
+                   "    <th align=\"right\">"+
+                   "        Cédula:&nbsp;"+
+                   "    </th>"+
+                   "    <th>"+
+                   "        "+cedula+
+                   "    </th>"+
+                   "</tr>"+
+
+                    "<tr>"+                
+                   "    <th align=\"right\">"+                
+                   "        Contraseña:&nbsp;"+
+                   "    </th>"+                
+                   "    <th>"+
+                   "        <input type=\"password\" name=\"contrasena\" value=\""+password+"\">"+
+                   "</tr>"+
+                   "<tr>"+
+                   "    <th align=\"right\">"+                
+                   "        Conformar Contraseña:&nbsp;"+
+                   "    </th>"+
+                   "    <th>"+
+                   "        <input type=\"password\" name=\"contrasena2\" value=\""+password2+"\">"+
+                   "    </th>"+
+                   "</tr>"+
+                   "<tr>"+
+                   "    <th align=\"right\">"+                
+                   "        Categoría:&nbsp;"+
+                   "    </th>"+
+                   "    <th>" + buscarCategoriasUsuario(conexion) + 
+                   "    </th>"+
+                   "</tr>"+
+                   "<tr>"+
+                   "    <th align=\"right\">"+ 
+                   "        Estatus:&nbsp;"+
+                   "    </th> "+
+                   "    <th>"+ buscarEstatusUsuario() + 
+                   "    </th> "+
+                   "</tr>";
+        //}
+        return formHtml;
+    }
+
+
 }
