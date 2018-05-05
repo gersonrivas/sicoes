@@ -13,6 +13,7 @@ package com.iupg.sicoes.modelo;
 public class Usuario {
     protected String login;
     protected String password;
+    protected String password2;
     protected String nombreUsu;
     protected int idUsu;
     protected String tipoUsu;
@@ -38,10 +39,18 @@ public class Usuario {
     public String getPassword() {
         return password;
     }
-
+    
     public void setPassword(String password) {
         this.password = password;
     }
+    
+    public String getPassword2() {
+        return password2;
+    }
+
+    public void setPassword2(String password2) {
+        this.password2 = password2;
+    }   
     
     public String getNombreUsu() {
         return nombreUsu;
@@ -98,5 +107,5 @@ public class Usuario {
     public void setTiempoSesion(int tiempoSesion) {
         this.tiempoSesion = tiempoSesion;
     }    
-                    
+              
 }
