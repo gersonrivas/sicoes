@@ -23,46 +23,24 @@
         <!--div id="page-wrap" th:replace="frag_inicial.jsp :: footer"-->
         <div id="page-wrap" style="border: 2px solid rgb(204, 204, 204); " align="center" >
 				
-            <form name="nombre_form" id="id_form" method="post" action="usuariosAdmin.do">
+            <form name="nombre_form" id="id_form" method="post" action="editarUsuarioAdmin.do">
                 
                 <div class="datagrid">
-                    <!-- Primera parte de la tabla -->                    
-                     
+                    
+                    <!-- Primera parte de la tabla -->                      
                     <table border="1">
                         <tr>
-                            <th colspan="3" align="center">Administración de Usuarios</th>
-                        </tr>
-                        <tr>                            
-                            <!--a>Cédula</a>                                
-                            <input type="text" name="cedula" value="" maxlength="9" onkeypress="return checkIt(event);" onfocus="clearThis(this)"> 
-                            <a>Nombre y Apellido</a>                                
-                            <input type="text" name="nombreApellido" value="" maxlength="60" onfocus="clearThis(this)" /-->
-                            <th align=\"center\">
-                                ${datosUsuarioSession}
-                            </th>                         
-                        </tr>    
-                        
-                        <tr>                            
-                            <th colspan="3" align="center">
-                                <!-- Combos -->
-                                Categoría 
-                                ${categoriaUsuariosSession}
-                                Estatus
-                                ${estatusUsuariosSession}
-                            </th>
-                        </tr>
+                            <th  align="center">Datos del Usuario</th>
+                        </tr>                        
+
                     </table>
                         
-                    <!-- Tabla detalle -->    
+                    <!-- Tabla detalle -->
                     <table border="1">
                         <thead>
                             <tr align="center">
-                                <th align="center">Usuario</th>
-                                <th align="center">Categoría</th>
-                                <th align="center">Nombres</th>
-                                <th align="center">Apellidos</th>
-                                <th align="center">Estatus</th>
-                                <th align="center">Operación</th>
+                                <th align="right" width="50%">Campo-</th>
+                                <th align="left" width="50%">Valor</th>
                             </tr>
                         </thead>
                         <!-- Pagineo -->
@@ -70,13 +48,14 @@
                         <!-- Botonera y mensajes -->
                         <tfoot>
                             <tr>                                
-                                <td colspan="8" align="center" id="tdmsg">  
+                                <td colspan="3" align="center" id="tdmsg">  
                                     <div id="paging" align="right">        
                                         ${mensajeError}
                                         <div id="sessionTimer"></div>
                                         
                                         ${botonSession}                                        
                                         <input name="action" type="submit" id="salir" value="Salir" />
+                                        <input name="action" type="submit" id="retornar" value="Retornar" />
                                     </div>
                                 </td>
                             </tr>
@@ -85,7 +64,8 @@
                         <!-- Contenido de la Tabla -->
                         <tbody>
                             
-                            ${detalleListaUsuariosSession}
+                            ${detalleFormularioUsuarioSession}
+                            
 
                         </tbody>
                     </table>
