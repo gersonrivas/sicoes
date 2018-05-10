@@ -11,8 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Clase que define los métodos para la manipulación de los Datos del Alumno.
@@ -363,7 +361,7 @@ public class DaoAlumno extends Alumno {
         String sql;
         String listaHorarios = "";
 
-        sql = " SELECT dia||' '||to_char(MIN(hora_ini),'HH12:MI am')||' - '||to_char(MAX(hora_fin),'HH12:MI am') AS bloqueHorario " +
+        sql = " SELECT dia||' '||to_char(MIN(hora_ini),'HH24:MI am')||' - '||to_char(MAX(hora_fin),'HH24:MI am') AS bloqueHorario " +
               " FROM horario h " +
               " INNER JOIN profesor_horario ph " +
               " ON (h.\"Id\" = ph.id_horario)  " +
