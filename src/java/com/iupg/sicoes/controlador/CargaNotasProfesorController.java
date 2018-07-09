@@ -82,6 +82,7 @@ public class CargaNotasProfesorController extends AbstractController {
             DaoProfesor daoProfesor = new DaoProfesor((String) misession.getAttribute("cedulaUsuSession"));
         
             daoProfesor.setPeriodo((String) misession.getAttribute("periodoSeleccionadoProfesorSession"));
+            daoProfesor.setSede((String) misession.getAttribute("sedeSeleccionadaSession"));
             daoProfesor.setAsignatura((String) misession.getAttribute("materiaSeleccionadaProfesorSession"));
             daoProfesor.setSeccion((String) misession.getAttribute("seccionSeleccionadaProfesorSession"));
             DaoUsuario daoUsuario = new DaoUsuario("", "", daoProfesor.getCedula());
@@ -158,6 +159,7 @@ public class CargaNotasProfesorController extends AbstractController {
                                 Map<String, Object> parametros = new HashMap();
                                 parametros.put("CEDULA", new Integer(daoProfesor.getCedula()));
                                 parametros.put("PERIODO", new String(daoProfesor.getPeriodo()));
+                                parametros.put("SEDE", new String(daoProfesor.getSede()));
                                 parametros.put("SECCION", new String(daoProfesor.getSeccion()));
                                 parametros.put("LOGO", new String(ParamConfig.getString("reporte.archivoImagenLogo")));
                                 parametros.put("MATERIA", new String(daoProfesor.getAsignatura()));
