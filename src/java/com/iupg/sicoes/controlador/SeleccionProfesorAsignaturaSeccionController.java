@@ -51,35 +51,87 @@ public class SeleccionProfesorAsignaturaSeccionController extends AbstractContro
                     misession.setAttribute("nombreProfesorSession",daoProfesor.getApellidos()+" "+daoProfesor.getNombres());
 
                     if ("POST".equals(request.getMethod())) {
-
-                    if (!"lbElige".equals(request.getParameter("periodo")) && (!"lbSinPeriodo".equals(request.getParameter("periodo")))) {
-                        daoProfesor.setPeriodo(request.getParameter("periodo").substring(2, request.getParameter("periodo").length()));
-                    //}
-                    //if (!"lbElige".equals(request.getParameter("materia")) && (!"lbSinAsignatura".equals(request.getParameter("materia")))) {
-                        daoProfesor.setAsignatura(request.getParameter("materia").substring(2, request.getParameter("materia").length()));
-
-
-                    //}
                     
-                    //if (!"lbElige".equals(request.getParameter("seccion")) && (!"lbSinSeccion".equals(request.getParameter("seccion")))) {
-                        daoProfesor.setSeccion(request.getParameter("seccion").substring(2, request.getParameter("seccion").length()));    
+                    
+                    //daoProfesor.setPeriodo(request.getParameter("periodo").substring(2, request.getParameter("periodo").length()));
+                    
+                    if (!"lbElige".equals(request.getParameter("periodo")) && (!"lbSinPeriodo".equals(request.getParameter("periodo")))) {
+                       daoProfesor.setPeriodo(request.getParameter("periodo").substring(2, request.getParameter("periodo").length()));
+                    
+                    
+                        //if (!"lbElige".equals(request.getParameter("sede")) && (!"lbSinSede".equals(request.getParameter("sede")))) {
+                            daoProfesor.setSede(request.getParameter("sede").substring(2, request.getParameter("sede").length()));
                         
-                        misession.setAttribute("botonSession","<input name=\"action\" type=\"submit\" id=\"cargar\" value=\"Cargar\" />");
-                    }
 
+                            //if (!"lbElige".equals(request.getParameter("materia")) && (!"lbSinAsignatura".equals(request.getParameter("materia")))) {
+                                daoProfesor.setAsignatura(request.getParameter("materia").substring(2, request.getParameter("materia").length()));
+                                                
+                                //if (!"lbElige".equals(request.getParameter("seccion")) && (!"lbSinSeccion".equals(request.getParameter("seccion")))) {
+                                    daoProfesor.setSeccion(request.getParameter("seccion").substring(2, request.getParameter("seccion").length()));    
+                        
+                                    if (!"lbElige".equals(request.getParameter("sede")) && (!"lbSinSede".equals(request.getParameter("sede")))) {
+                                        if (!"lbElige".equals(request.getParameter("materia")) && (!"lbSinAsignatura".equals(request.getParameter("materia")))) {
+                                            if (!"lbElige".equals(request.getParameter("seccion")) && (!"lbSinSeccion".equals(request.getParameter("seccion")))) {
+                                                misession.setAttribute("botonSession","<input name=\"action\" type=\"submit\" id=\"cargar\" value=\"Cargar\" />");
+                                            }
+                                        }
+                                    }
+                                    
+                                    
+                        
+                                //}
+                            //}
+                        //}
+
+                    }
+                    
+                    
                     String opcionesPeriodos = daoProfesor.BuscarPeriodosActivos(daoConexion.ConexionBD());
                     misession.setAttribute("periodosProfesorSession", opcionesPeriodos);
-                    misession.setAttribute("periodoSeleccionadoProfesorSession", request.getParameter("periodo").substring(2, request.getParameter("periodo").length()));                       
-
+                    misession.setAttribute("periodoSeleccionadoProfesorSession", request.getParameter("periodo").substring(2, request.getParameter("periodo").length()));                                 
+                    
+                    
+                    
+                    String opcionesSedes = daoProfesor.BuscarSedes(daoConexion.ConexionBD());
+                    misession.setAttribute("sedesSession", opcionesSedes);
+                    misession.setAttribute("sedeSeleccionadaSession", request.getParameter("sede").substring(2, request.getParameter("sede").length()));
+                    //daoProfesor.setSede(request.getParameter("sede").substring(2, request.getParameter("sede").length()));
+                    
+                    //daoProfesor.setAsignatura(request.getParameter("materia").substring(2, request.getParameter("materia").length()));
                     String opcionesMaterias = daoProfesor.BuscarMateriasAsignadas(daoConexion.ConexionBD());
                     misession.setAttribute("materiasProfesorSession", opcionesMaterias);
                     misession.setAttribute("materiaSeleccionadaProfesorSession", request.getParameter("materia").substring(2, request.getParameter("materia").length()));
                         
+                    //daoProfesor.setSeccion(request.getParameter("seccion").substring(2, request.getParameter("seccion").length()));
                     String opcionesSecciones = daoProfesor.BuscarSeccionesMateriasAsignadas(daoConexion.ConexionBD());
                     misession.setAttribute("seccionesMateriaProfesorSession", opcionesSecciones);
                     misession.setAttribute("seccionSeleccionadaProfesorSession", request.getParameter("seccion").substring(2, request.getParameter("seccion").length()));
- 
-                        //Si preciona el botón buscar, cargar o modificar
+
+                    
+                    if (!"lbElige".equals(request.getParameter("periodo")) && (!"lbSinPeriodo".equals(request.getParameter("periodo")))) {
+                       daoProfesor.setPeriodo(request.getParameter("periodo").substring(2, request.getParameter("periodo").length()));
+                    
+                    
+                        //if (!"lbElige".equals(request.getParameter("sede")) && (!"lbSinSede".equals(request.getParameter("sede")))) {
+                            daoProfesor.setSede(request.getParameter("sede").substring(2, request.getParameter("sede").length()));
+                        
+
+                            //if (!"lbElige".equals(request.getParameter("materia")) && (!"lbSinAsignatura".equals(request.getParameter("materia")))) {
+                                daoProfesor.setAsignatura(request.getParameter("materia").substring(2, request.getParameter("materia").length()));
+                                                
+                                //if (!"lbElige".equals(request.getParameter("seccion")) && (!"lbSinSeccion".equals(request.getParameter("seccion")))) {
+                                    daoProfesor.setSeccion(request.getParameter("seccion").substring(2, request.getParameter("seccion").length()));    
+                        
+                                    misession.setAttribute("botonSession","<input name=\"action\" type=\"submit\" id=\"cargar\" value=\"Cargar\" />");
+                        
+                                //}
+                            //}
+                        //}
+
+                    }
+                    
+                    
+                    //Si preciona el botón buscar, cargar o modificar
                         String accion = request.getParameter("action");
                     
                         if (accion != null) {
@@ -161,12 +213,19 @@ public class SeleccionProfesorAsignaturaSeccionController extends AbstractContro
                         //Por borrar
 
                         //pagina ="principal/incripcion";
+                        daoProfesor.setPeriodo(request.getParameter("periodo").substring(2, request.getParameter("periodo").length()));
                         String opcionesPeriodos = daoProfesor.BuscarPeriodosActivos(daoConexion.ConexionBD());
                         misession.setAttribute("periodosProfesorSession", opcionesPeriodos);
 
+                        daoProfesor.setSede(request.getParameter("sede").substring(2, request.getParameter("sede").length()));
+                        String opcionesSedes = daoProfesor.BuscarSedes(daoConexion.ConexionBD());
+                        misession.setAttribute("sedesSession", opcionesSedes);
+
+                        daoProfesor.setAsignatura(request.getParameter("materia").substring(2, request.getParameter("materia").length()));
                         String opcionesMaterias = daoProfesor.BuscarMateriasAsignadas(daoConexion.ConexionBD());
                         misession.setAttribute("materiasProfesorSession", opcionesMaterias);
                         
+                        daoProfesor.setSeccion(request.getParameter("seccion").substring(2, request.getParameter("seccion").length()));
                         String opcionesSecciones = daoProfesor.BuscarSeccionesMateriasAsignadas(daoConexion.ConexionBD());
                         misession.setAttribute("seccionesMateriaProfesorSession", opcionesSecciones);                        
                                             
@@ -207,6 +266,9 @@ public class SeleccionProfesorAsignaturaSeccionController extends AbstractContro
                 
                 String opcionesPeriodos = daoProfesor.BuscarPeriodosActivos(daoConexion.ConexionBD());
                 misession.setAttribute("periodosProfesorSession", opcionesPeriodos);
+
+                String opcionesSedes = daoProfesor.BuscarSedes(daoConexion.ConexionBD());
+                misession.setAttribute("sedesSession", opcionesSedes);
 
                 String opcionesMaterias = daoProfesor.BuscarMateriasAsignadas(daoConexion.ConexionBD());
                 misession.setAttribute("materiasProfesorSession", opcionesMaterias);

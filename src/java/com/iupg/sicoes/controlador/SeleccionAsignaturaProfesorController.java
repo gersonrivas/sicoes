@@ -90,6 +90,11 @@ public class SeleccionAsignaturaProfesorController extends AbstractController {
                         misession.setAttribute("periodosProfesorSession", opcionesPeriodos);
                         misession.setAttribute("periodoSeleccionadoProfesorSession", request.getParameter("periodo").substring(2, request.getParameter("periodo").length()));
 
+                        daoProfesor.setSede(request.getParameter("sede").substring(2, request.getParameter("sede").length()));
+                        String opcionesSedes = daoProfesor.BuscarSedes(daoConexion.ConexionBD());
+                        misession.setAttribute("sedesSession", opcionesSedes);
+                        misession.setAttribute("sedeSeleccionadaSession", request.getParameter("sede").substring(2, request.getParameter("sede").length()));
+
                         daoProfesor.setAsignatura(request.getParameter("materia").substring(2, request.getParameter("materia").length()));
                         String opcionesMaterias = daoProfesor.BuscarMateriasAsignadas(daoConexion.ConexionBD());
                         misession.setAttribute("materiasProfesorSession", opcionesMaterias);
@@ -131,6 +136,9 @@ public class SeleccionAsignaturaProfesorController extends AbstractController {
                     //pagina ="principal/incripcion";
                     String opcionesPeriodos = daoProfesor.BuscarPeriodosActivos(daoConexion.ConexionBD());
                     misession.setAttribute("periodosProfesorSession", opcionesPeriodos);
+
+                    String opcionesSedes = daoProfesor.BuscarSedes(daoConexion.ConexionBD());
+                    misession.setAttribute("sedesSession", opcionesSedes);
 
                     String opcionesMaterias = daoProfesor.BuscarMateriasAsignadas(daoConexion.ConexionBD());
                     misession.setAttribute("materiasProfesorSession", opcionesMaterias);
