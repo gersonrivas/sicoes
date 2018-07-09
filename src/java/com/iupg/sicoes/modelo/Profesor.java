@@ -27,7 +27,8 @@ public class Profesor {
     protected String asignatura;
     protected String seccion;
     protected Integer idMatEspAulSecTur;
-       
+    protected String sede;
+   
     public Profesor(String cedula) {
         this.cedula = cedula;
     }    
@@ -167,5 +168,13 @@ public class Profesor {
     public void setIdMatEspAulSecTur(Integer idMatEspAulSecTur) {
         this.idMatEspAulSecTur = idMatEspAulSecTur;
     }
+    
+    public String getSede() {
+        return sede;
+    }
+
+    public void setSede(String sede) {
+        this.sede = sede;
+    }    
     
 }

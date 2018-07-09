@@ -107,7 +107,7 @@ public class DaoProfesor extends Profesor {
             "AND p.estatus = 'A' " +
             "AND (NOW()::date BETWEEN fec_ini_insc::date AND fec_fin::date) ; ";        
         
-        //System.out.println(sql);        
+        System.out.println(sql);        
         PreparedStatement ps;        
         ps = conexion.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
@@ -134,6 +134,46 @@ public class DaoProfesor extends Profesor {
         return selectPeriodo;
     }    
     
+    public String BuscarSedes(Connection conexion)  throws SQLException {
+        String sql;
+        String selectSede = "";
+        String optionsSede = "";
+        boolean existe=false;
+        int i=0;
+                
+        sql = "SELECT DISTINCT descrip_sede, cod_sede FROM materia_espec_aula_seccion_turno " +
+            "INNER JOIN profesor_horario " +
+            "ON (profesor_horario.id_mat_espec_aula_secc_tur = materia_espec_aula_seccion_turno.\"Id\") " +
+            "INNER JOIN sede ON (cod_sede=sede) " +
+            "WHERE profesor_horario.cedula = '"+cedula+"' " +
+            "AND materia_espec_aula_seccion_turno.periodo = '" + periodo + "';";
+        
+        PreparedStatement ps;        
+        ps = conexion.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        selectSede = "<select name=\"sede\"  onchange=\"form.submit()\" id=\"sede\" >"; 
+
+        while (rs.next()) {
+            i++;
+            if (rs.getString("cod_sede").equals(sede)) {
+                optionsSede = optionsSede + "<option value=\"lb"+rs.getString("cod_sede")+"\" selected >"+rs.getString("descrip_sede");
+                existe=true;
+            } else {
+                optionsSede = optionsSede + "<option value=\"lb"+rs.getString("cod_sede")+"\" >"+rs.getString("descrip_sede");
+            }   
+        }
+        if (!existe || sede=="" || sede==null) {
+            optionsSede =  "<option value=\"lbElige\" selected>Elige" + optionsSede;
+        }
+        if (i==0) {
+            optionsSede =  "<option value=\"lbSinSede\" selected>Sin Sede";
+        }
+        selectSede = selectSede + optionsSede + "</select>";
+
+        return selectSede;
+    }
+        
     public String BuscarMateriasAsignadas(Connection conexion)  throws SQLException {
         String sql;
         String selectMateria = "";
@@ -151,7 +191,8 @@ public class DaoProfesor extends Profesor {
                 " INNER JOIN public.materia " +
             " ON (materia_espec_aula_seccion_turno.cod_mat = materia.cod_mat) " +
             " WHERE profesor_horario.cedula = '"+cedula+"' AND " + 
-            " materia_espec_aula_seccion_turno.periodo = '" + periodo + "';";
+            " materia_espec_aula_seccion_turno.periodo = '" + periodo + "' AND " +
+            " materia_espec_aula_seccion_turno.sede = '" + sede + "';";
         
         PreparedStatement ps;        
         ps = conexion.prepareStatement(sql);
@@ -308,6 +349,7 @@ public class DaoProfesor extends Profesor {
             "AND p.periodo = '"+periodo+"' " +
             "AND meast.cod_mat = '"+asignatura+"' " +
             "AND meast.seccion = '"+seccion+"' " +
+            "AND meast.sede = '"+sede+"' " +
             "AND (NOW()::date BETWEEN fec_ini_insc::date AND fec_fin::date) " +
             "ORDER BY iad.cedula;";
         //System.out.println(sql);
@@ -447,6 +489,7 @@ public class DaoProfesor extends Profesor {
             "AND p.periodo = '"+periodo+"' " +
             "AND meast.cod_mat = '"+asignatura+"' " +
             "AND meast.seccion = '"+seccion+"' " +
+            "AND meast.sede = '"+sede+"' " +
             "AND iad.cedula = '"+cedula_alum+"' " +
             "AND (NOW()::date BETWEEN fec_ini_insc::date AND fec_fin::date) " +
             "ORDER BY iad.cedula;";
