@@ -7,6 +7,7 @@ package com.iupg.sicoes.controlador;
 
 import com.iupg.sicoes.modelo.DaoProfesor;
 import com.iupg.sicoes.modelo.DaoConexion;
+import com.iupg.sicoes.modelo.DaoGeneral;
 import com.iupg.sicoes.propiedades.ParamConfig;
 import com.iupg.sicoes.servicio.EmailService;
 import com.iupg.sicoes.servicio.ParamCorreo;
@@ -46,10 +47,12 @@ public ConsultarActasNotasController() {
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws ServletException, Exception, ConfigurationException {
         //throw new UnsupportedOperationException("Not yet implemented");
         String mensaje = "";
-        String pagina = "principal/consultarActasNotas";
+        String pagina = "academico/profesor/consultarActasNotas";
         HttpSession misession= request.getSession(); 
         daoConexion = new DaoConexion();
         DaoProfesor daoProfesor = new DaoProfesor((String) misession.getAttribute("cedulaUsuSession"));
+        //DaoGeneral daoGeneral = new DaoGeneral();
+        
         boolean validado = false;
         
         //Para obtener parámetros de las propiedades del correo
@@ -79,19 +82,25 @@ public ConsultarActasNotasController() {
                 if ("POST".equals(request.getMethod())) {                    
                     // Para el llenado de los demás combos
                     if (!"lbElige".equals(request.getParameter("periodo")) && (!"lbSinPeriodo".equals(request.getParameter("periodo")))) {
-                        daoProfesor.setPeriodo(request.getParameter("periodo").substring(2, request.getParameter("periodo").length()));
-                        String opcionesPeriodos = daoProfesor.BuscarPeriodosActivos(daoConexion.ConexionBD());
-                        misession.setAttribute("periodosProfesorSession", opcionesPeriodos);
+                            daoProfesor.setPeriodo(request.getParameter("periodo").substring(2, request.getParameter("periodo").length()));
+                            String opcionesPeriodos = daoProfesor.BuscarPeriodosActivos(daoConexion.ConexionBD());
+                            misession.setAttribute("periodosProfesorSession", opcionesPeriodos);
 
-                        daoProfesor.setAsignatura(request.getParameter("materia").substring(2, request.getParameter("materia").length()));
-                        String opcionesMaterias = daoProfesor.BuscarMateriasAsignadas(daoConexion.ConexionBD());
-                        misession.setAttribute("materiasProfesorSession", opcionesMaterias);
+                            daoProfesor.setSede(request.getParameter("sede").substring(2, request.getParameter("sede").length()));
+                            String opcionesSedes = daoProfesor.BuscarSedes(daoConexion.ConexionBD());
+                            misession.setAttribute("sedesSession", opcionesSedes);
+                            misession.setAttribute("sedeSeleccionadaSession", request.getParameter("sede").substring(2, request.getParameter("sede").length()));
+                                
+                            daoProfesor.setAsignatura(request.getParameter("materia").substring(2, request.getParameter("materia").length()));
+                            String opcionesMaterias = daoProfesor.BuscarMateriasAsignadas(daoConexion.ConexionBD());
+                            misession.setAttribute("materiasProfesorSession", opcionesMaterias);
+                                                
+                            daoProfesor.setSeccion(request.getParameter("seccion").substring(2, request.getParameter("seccion").length()));
+                            String opcionesSecciones = daoProfesor.BuscarSeccionesMateriasAsignadas(daoConexion.ConexionBD());
+                            misession.setAttribute("seccionesMateriaProfesorSession", opcionesSecciones);
                         
-                        daoProfesor.setSeccion(request.getParameter("seccion").substring(2, request.getParameter("seccion").length()));
-                        String opcionesSecciones = daoProfesor.BuscarSeccionesMateriasAsignadas(daoConexion.ConexionBD());
-                        misession.setAttribute("seccionesMateriaProfesorSession", opcionesSecciones);
-                    }
-                    
+                    }                        
+                        
                     //Si preciona el botón consultar                    
                     String accion = request.getParameter("action");
                     
@@ -107,6 +116,7 @@ public ConsultarActasNotasController() {
                                 Map<String, Object> parametros = new HashMap();
                                 parametros.put("CEDULA", new Integer(daoProfesor.getCedula()));
                                 parametros.put("PERIODO", new String(daoProfesor.getPeriodo()));
+                                parametros.put("SEDE", new String(daoProfesor.getSede()));
                                 parametros.put("MATERIA", new String(daoProfesor.getAsignatura()));
                                 parametros.put("SECCION", new String(daoProfesor.getSeccion()));
                                 parametros.put("LOGO", new String(ParamConfig.getString("reporte.archivoImagenLogo")));
@@ -127,6 +137,9 @@ public ConsultarActasNotasController() {
                     // else del POST                        
                     
                     //pagina ="principal/incripcion";
+                    String opcionesSedes = daoProfesor.BuscarSedes(daoConexion.ConexionBD());
+                    misession.setAttribute("sedesSession", opcionesSedes);
+
                     String opcionesPeriodos = daoProfesor.BuscarPeriodosActivos(daoConexion.ConexionBD());
                     misession.setAttribute("periodosProfesorSession", opcionesPeriodos);
 
