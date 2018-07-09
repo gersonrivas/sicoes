@@ -40,6 +40,7 @@
                             <tr align="center">
                                 <th align="center">Cédula</th>
                                 <th align="center">Período</th>
+                                <th align="center">Sede</th>
                                 <th align="center">Asignatura</th>
                                 <th align="center">Sección</th>                                
                             </tr>
@@ -49,7 +50,7 @@
                         <!-- Botonera y mensajes -->
                         <tfoot>
                             <tr>                                
-                                <td colspan="4" align="center" id="tdmsg">  
+                                <td colspan="5" align="center" id="tdmsg">  
                                     <div id="paging" align="right">        
                                         ${mensajeError}
                                         <div id="sessionTimer"></div>
@@ -74,6 +75,11 @@
                                 <td align="center">
                                     ${periodosProfesorSession}
                                 </td>
+                                
+                                <td align="center">
+                                    ${sedesSession}
+                                </td>
+
                                 <td align="center">
                                     ${materiasProfesorSession}
                                 </td>
