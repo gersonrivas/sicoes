@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f9b675a6-dda8-460d-830b-62a1e0846543">
 	<property name="ireport.zoom" value="2.3579476910000023"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="587"/>
+	<property name="ireport.y" value="14"/>
 	<parameter name="CEDULA" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
 	</parameter>
@@ -12,10 +12,12 @@ am.cod_mat, m.descrip_mat, me.uc, me.semestre,
 me.termino, 
 CASE WHEN am.nota='AP' THEN 0
  WHEN am.nota='RE' THEN 0
+ WHEN fun_nota_aprobada(1,am.nota)=false THEN 0
  ELSE am.nota::Integer
 END AS nota_int,
 CASE WHEN am.nota='AP' THEN 0
  WHEN am.nota='RE' THEN 0
+ WHEN fun_nota_aprobada(1,am.nota)=false THEN 0
  ELSE 1
 END AS cant_mat,
 am.nota, am.seccion, am.fecha,
@@ -80,24 +82,32 @@ ORDER BY semestre_termino;]]>
 		<variableExpression><![CDATA[$F{uc}]]></variableExpression>
 	</variable>
 	<variable name="lbIndice_semestre_trimestre" class="java.lang.String"/>
-	<variable name="nota_int_1" class="java.lang.Double" resetType="Group" resetGroup="SemestreTerminoGrupo" calculation="Sum">
-		<variableExpression><![CDATA[$F{nota_int}]]></variableExpression>
-	</variable>
-	<variable name="cant_mat_1" class="java.lang.Double" resetType="Group" resetGroup="SemestreTerminoGrupo" calculation="Sum">
-		<variableExpression><![CDATA[$F{cant_mat}]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
-	</variable>
-	<variable name="promedioXSemTri" class="java.lang.Double" resetType="Group" resetGroup="SemestreTerminoGrupo" calculation="Sum">
-		<variableExpression><![CDATA[]]></variableExpression>
-	</variable>
-	<variable name="nota_int_2" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{nota_int}]]></variableExpression>
+	<variable name="nota_int_2" class="java.lang.Double" resetType="Group" resetGroup="SemestreTerminoGrupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{nota_int}*$F{uc}]]></variableExpression>
 	</variable>
 	<variable name="cant_mat_2" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{cant_mat}]]></variableExpression>
 	</variable>
-	<variable name="uc_aprob_1" class="java.lang.Integer" calculation="Sum">
+	<variable name="uc_aprob_1" class="java.lang.Integer" resetType="Group" resetGroup="SemestreTerminoGrupo" calculation="Sum">
 		<variableExpression><![CDATA[$F{uc_aprob}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="uc_aprob_2" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{uc_aprob}]]></variableExpression>
+	</variable>
+	<variable name="producto_1" class="java.lang.Integer" resetType="Column">
+		<variableExpression><![CDATA[$F{nota_int}*$F{uc_aprob}]]></variableExpression>
+	</variable>
+	<variable name="producto_2" class="java.lang.Integer" resetType="Group" resetGroup="SemestreTerminoGrupo" calculation="Sum">
+		<variableExpression><![CDATA[$V{producto_1}]]></variableExpression>
+	</variable>
+	<variable name="producto_3" class="java.lang.Double" resetType="Group" resetGroup="SemestreTerminoGrupo">
+		<variableExpression><![CDATA[($V{uc_aprob_1}.intValue()!=0)
+? ($V{producto_2}.doubleValue()/$V{uc_aprob_1}.doubleValue()) 
+: 0]]></variableExpression>
+	</variable>
+	<variable name="promedioGeneral" class="java.lang.Double" incrementType="Group" incrementGroup="SemestreTerminoGrupo" calculation="Average">
+		<variableExpression><![CDATA[$V{producto_3}]]></variableExpression>
 	</variable>
 	<group name="SemestreTerminoGrupo">
 		<groupExpression><![CDATA[$F{semestre_termino}]]></groupExpression>
@@ -143,11 +153,11 @@ ORDER BY semestre_termino;]]>
 					<textFieldExpression><![CDATA["Indice del "+$F{nombre_lapso}]]></textFieldExpression>
 				</textField>
 				<textField pattern="###0.00;-###0.00">
-					<reportElement x="222" y="1" width="46" height="12" uuid="ff387918-b062-4125-b623-5794115cd7a4"/>
+					<reportElement x="220" y="1" width="40" height="12" uuid="9e831478-8235-44da-8d6d-304790a488b7"/>
 					<textElement>
 						<font size="8" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{nota_int_1}/$V{cant_mat_1}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{producto_3}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -253,14 +263,14 @@ ORDER BY semestre_termino;]]>
 				<reportElement x="466" y="18" width="87" height="29" uuid="fc92bb01-ded1-4f80-b4cf-ee156497747e"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="475" y="21" width="28" height="12" uuid="6c509fc7-eeff-4dda-9937-eb74425a017f"/>
+				<reportElement x="473" y="21" width="34" height="12" uuid="6c509fc7-eeff-4dda-9937-eb74425a017f"/>
 				<textElement>
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FECHA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="514" y="21" width="33" height="12" uuid="c608df4a-6217-42ff-b334-3d874b1cdcb1"/>
+				<reportElement x="514" y="21" width="39" height="12" uuid="c608df4a-6217-42ff-b334-3d874b1cdcb1"/>
 				<textElement>
 					<font size="8" isBold="true"/>
 				</textElement>
@@ -391,27 +401,29 @@ ORDER BY semestre_termino;]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="313" y="1" width="24" height="12" uuid="3c86c859-6c3d-4235-ad70-b494b7197d19"/>
-				<textElement textAlignment="Center">
-					<font size="8"/>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="313" y="1" width="24" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="3c86c859-6c3d-4235-ad70-b494b7197d19"/>
+				<textElement textAlignment="Center" rotation="None" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{uc}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="345" y="1" width="58" height="12" uuid="3903cf67-e43d-44c7-9b59-7173e02b7b5d"/>
-				<textElement textAlignment="Center">
-					<font size="8"/>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="345" y="1" width="58" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="3903cf67-e43d-44c7-9b59-7173e02b7b5d"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nota}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="2" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="1" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</pageFooter>
 	<lastPageFooter>
 		<band height="32">
@@ -433,26 +445,26 @@ ORDER BY semestre_termino;]]>
 				</textElement>
 				<text><![CDATA[Total Indice Académico]]></text>
 			</staticText>
-			<textField pattern="###0.00;-###0.00">
-				<reportElement x="246" y="16" width="36" height="12" uuid="2bdb28c5-b64d-4ca4-8bcc-18ca4b7bff0c"/>
-				<textElement>
-					<font size="8" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{nota_int_2}/$V{cant_mat_2}]]></textFieldExpression>
-			</textField>
 			<staticText>
-				<reportElement x="117" y="28" width="126" height="12" uuid="d5a21dc6-a630-4b38-9c09-974d382ce888"/>
-				<textElement>
+				<reportElement x="143" y="28" width="100" height="12" uuid="d5a21dc6-a630-4b38-9c09-974d382ce888"/>
+				<textElement textAlignment="Right">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Unidades de Crédito Aprobadas]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="246" y="28" width="100" height="12" uuid="91947b86-fbcc-48ff-9619-d29eeec8c045"/>
+				<reportElement x="246" y="29" width="53" height="12" uuid="011a2edb-7a51-4c46-8579-2a1bdb4f2235"/>
 				<textElement>
 					<font size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{uc_aprob_1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{uc_aprob_2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="246" y="17" width="51" height="12" uuid="ad371d4e-97e3-44a3-a53d-f13ab0e6eacc"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{promedioGeneral}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

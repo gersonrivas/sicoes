@@ -8,6 +8,9 @@
 	<parameter name="SECCION" class="java.lang.String"/>
 	<parameter name="LOGO" class="java.lang.String"/>
 	<parameter name="MATERIA" class="java.lang.String"/>
+	<parameter name="SEDE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT DISTINCT
   materia_espec_aula_seccion_turno.periodo, 
@@ -33,6 +36,7 @@ WHERE profesor.cedula = $P{CEDULA}
 AND materia_espec_aula_seccion_turno.periodo = $P{PERIODO}
 AND inscripcion_alumno_detalle.cod_mat = $P{MATERIA}
 AND materia_espec_aula_seccion_turno.seccion = $P{SECCION}
+AND materia_espec_aula_seccion_turno.sede = $P{SEDE}
 AND inscripcion_alumno_detalle.estatus IN ('I','D')
 ORDER BY inscripcion_alumno_detalle.cedula;]]>
 	</queryString>
