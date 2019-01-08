@@ -97,8 +97,17 @@
                     out.println("<a href=\"#\">Registros</a>");
                     out.println("<ul>");
                     out.println("<li><a href=\"recordNotas.do\" onclick=opcionMenu(\"opcion1\");>Record de Notas</a></li>");
-                    
                     if (tipoUsuario.equals("S")) out.println("<li><a href=\"seleccionProfesorAsignaturaSeccion.do\" onclick=opcionMenu('opcion1');>Notas</a></li>");
+                    out.println("</ul>");    
+                    out.println("</li>");
+                    
+                    out.println("<li>");
+                    out.println("<a href=\"#\">Graduados</a>"); 
+                    out.println("<ul>");
+                    out.println("<li><a href=\"asignaturaSeccionAula.do\" onclick=opcionMenu('opcion1');>Pasar a Grado</a></li>");
+
+                    
+                    
                     
                     out.println("</ul>");
                     out.println("</li>");
