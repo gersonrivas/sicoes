@@ -104,7 +104,8 @@
                     out.println("<li>");
                     out.println("<a href=\"#\">Graduados</a>"); 
                     out.println("<ul>");
-                    out.println("<li><a href=\"asignaturaSeccionAula.do\" onclick=opcionMenu('opcion1');>Pasar a Grado</a></li>");
+                    out.println("<li><a href=\"pasarAGrado.do\" onclick=opcionMenu('opcion1');>Pasar a Grado</a></li>");
+                    out.println("<li><a href=\"graduado.do\" onclick=opcionMenu('opcion1');>Graduado</a></li>");
 
                     
                     
