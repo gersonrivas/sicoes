@@ -38,12 +38,14 @@ WHERE
   inscripcion_alumno.periodo = $P{PERIODO}
 ORDER BY alumno.cedula;]]>
 	</queryString>
-	<field name="periodo" class="java.lang.String"/>
+	<field name="periodo" class="java.lang.String">
+		<fieldDescription><![CDATA[Período por semestre]]></fieldDescription>
+	</field>
 	<field name="cedula" class="java.lang.Long"/>
 	<field name="apellidos" class="java.lang.String"/>
 	<field name="nombres" class="java.lang.String"/>
 	<field name="estatus" class="java.lang.String">
-		<fieldDescription><![CDATA[Estatus de la Inscripción.  Ejemplo: A=Inscripción Administrativa Solamente, C=Inscripción Académica realizada por el Alumno y V=Inscripción Validada por Registro y Control.]]></fieldDescription>
+		<fieldDescription><![CDATA[Estatus de la Inscripción.  Ejemplo: A=Inscripción Administrativa Solamente, C=Inscripción Académica realizada por el Alumno, R=Inscripción con Retiro de Asignaturas, D=Inscripción con Adición de Asignaturas,  y V=Inscripción Validada por Registro y Control. ]]></fieldDescription>
 	</field>
 	<field name="fec_hor_act" class="java.lang.String">
 		<fieldDescription><![CDATA[Fecha y hora de la última actualización.]]></fieldDescription>
