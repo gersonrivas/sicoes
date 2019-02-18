@@ -521,7 +521,7 @@ public class DaoGeneral extends General {
             listaSecciones = listaSecciones + "<td>"+rs.getString("nomb_espec")+"</td>"+
                                               "<td align=\"center\">"+rs.getString("cod_mat")+"</td>"+
                                               "<td align=\"center\">"+rs.getString("nomb_turno")+"</td>"+ 
-                                              "<td align=\"center\"><a href=\"horariosProfesor.do?idMatEspAulSecTurSession="+rs.getString("Id")+"\">"+rs.getString("seccion")+"</a></td>"+ 
+                                              "<td align=\"center\"><a href=\"horariosProfesor.do?idMatEspAulSecTurSession="+rs.getString("Id")+"&periodoSeleccionadoSession="+rs.getString("periodo")+"\">"+rs.getString("seccion")+"</a></td>"+ 
                                               "<td align=\"center\">"+rs.getString("aula")+"</td>"+
                                               "<td align=\"center\">"+rs.getString("inscritos")+"</td></tr>";
         }
@@ -1033,6 +1033,114 @@ public class DaoGeneral extends General {
         
     }
     
+    /**
+     * Método para buscar el la tabla los campos de los reportes
+     * @param conexion
+     * @return
+     * @throws SQLException 
+     */
+    public String reporte(Connection conexion,String codigoReporte, String campo)  throws SQLException {
+        String sql;       
+        
+        try {
+            sql = "SELECT " + campo + 
+                  " FROM reporte " +
+                  " WHERE cod_rep = '" + codigoReporte + "'";
+            
+            PreparedStatement ps;        
+            ps = conexion.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+        
+            String valor = "";
+            if (rs.next()) {
+                valor = rs.getString(campo).toString();
+            }
+            return valor;
+        } catch (Exception e) {
+            conexion.close();
+            return e.getMessage();
+        }
+    }
+ 
     
+    /**
+     * Método para buscar el la tabla los campos de los reportes
+     * @param conexion
+     * @return
+     * @throws SQLException 
+     */
+    public String numerosLetras(Connection conexion, int numero)  throws SQLException {
+        String sql;       
+        
+        try {
+            sql = "SELECT num_letra " + 
+                  " FROM numero_letras " +
+                  " WHERE numero = " + numero ;
+            
+            PreparedStatement ps;        
+            ps = conexion.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+        
+            String valor = "";
+            if (rs.next()) {
+                valor = rs.getString("num_letra").toString();
+            }
+            return valor;
+        } catch (Exception e) {
+            conexion.close();
+            return e.getMessage();
+        }
+    }
+    
+    /**
+     * Método para Convertir el me en Letra
+     * @param conexion
+     * @param numero
+     * @return
+     * @throws SQLException 
+     */
+    public String mesLetras(Connection conexion, int mes)  throws SQLException {
+        String nombreMes;
+        switch(mes) {
+            case 1:
+               nombreMes = "Enero";
+            case 2:
+               nombreMes = "Febrero";
+               break; 
+            case 3:
+               nombreMes = "Marzo";
+            case 4:
+               nombreMes = "Abril";
+            case 5:
+               nombreMes = "Mayo";
+            case 6:
+               nombreMes = "Junio";
+            case 7:
+               nombreMes = "Julio";
+               break; 
+            case 8:
+               nombreMes = "Agosto";
+               break; 
+            case 9:
+               nombreMes = "Septiembre";
+               break; 
+            case 10:
+               nombreMes = "Octubre";
+               break; 
+            case 11:
+               nombreMes = "Noviembre";
+               break; 
+            case 12:
+               nombreMes = "Diciembre";
+               break; 
+            default: 
+                nombreMes = "Mes Inválido";
+                break; 
+               
+        }
+        return nombreMes;
+        
+    }
+
     
 }
