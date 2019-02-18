@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="612" pageHeight="1008" columnWidth="562" leftMargin="30" rightMargin="20" topMargin="30" bottomMargin="20" uuid="884a9083-1e6c-4a92-9db1-136e2f52fdcd">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="219"/>
+	<parameter name="TEXTO1" class="java.lang.String"/>
+	<parameter name="CEDULA" class="java.lang.String"/>
+	<parameter name="ESPECIALIDAD" class="java.lang.String"/>
+	<parameter name="TEXTO2" class="java.lang.String"/>
+	<parameter name="FIRMA_1" class="java.lang.String"/>
+	<parameter name="CARGO_1" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT 
+  graduado.cedula, 
+  graduado.id_especial, 
+  especialidad.nomb_espec, 
+  turno.nomb_turno, 
+  turno."Id",
+  graduado.fec_graduacion, 
+  graduado.libro, 
+  graduado.tomo, 
+  graduado.folio, 
+  graduado.numero, 
+  graduado.resolucion, 
+  graduado.fec_acta, 
+  graduado.fec_firma, 
+  graduado.reg_grado, 
+  graduado.aranceles, 
+  graduado.sede, 
+  alumno.apellidos, 
+  alumno.nombres, 
+  alumno.nacionalidad, 
+  alumno_materia.cod_mat, 
+  alumno_materia.nota, 
+  alumno_materia.fecha, 
+  materia.descrip_mat, 
+  materia_espec.uc, 
+  CASE 
+	WHEN (turno."Id" = 4) THEN materia_espec.termino
+	ELSE materia_espec.semestre
+  END AS semter,
+  horario_grupo.nombre_lapso,
+  materia_espec.semestre, 
+  materia_espec.termino,
+  CASE WHEN alumno_materia.nota='AP' THEN 0
+       WHEN alumno_materia.nota='RE' THEN 0
+       WHEN fun_nota_aprobada(1,alumno_materia.nota)=false THEN 0
+       ELSE alumno_materia.nota::Integer
+  END AS nota_int,
+  CASE WHEN alumno_materia.nota='10' THEN 'DIEZ'
+       WHEN alumno_materia.nota='11' THEN 'ONCE'
+       WHEN alumno_materia.nota='12' THEN 'DOCE'
+       WHEN alumno_materia.nota='13' THEN 'TRECE'
+       WHEN alumno_materia.nota='14' THEN 'CATORCE'
+       WHEN alumno_materia.nota='15' THEN 'QUINCE'
+       WHEN alumno_materia.nota='16' THEN 'DIECISEIS'
+       WHEN alumno_materia.nota='17' THEN 'DIECISIETE'
+       WHEN alumno_materia.nota='18' THEN 'DIECIOCHO'
+       WHEN alumno_materia.nota='19' THEN 'DIECINUEVE'
+       WHEN alumno_materia.nota='20' THEN 'VEINTE'
+       WHEN alumno_materia.nota='AP' THEN 'APROBADO'
+       ELSE 'REPROBADO'
+  END AS nota_letra,
+  CASE WHEN fun_nota_aprobada(1,alumno_materia.nota) THEN materia_espec.uc
+       ELSE 0
+  END AS uc_aprob
+FROM 
+  public.graduado, 
+  public.alumno_materia, 
+  public.especialidad, 
+  public.turno, 
+  public.alumno, 
+  public.materia, 
+  public.materia_espec,
+  horario_grupo
+WHERE 
+  graduado.cedula = alumno_materia.cedula AND
+  graduado.id_especial = especialidad."Id" AND
+  graduado.id_turno = turno."Id" AND
+  graduado.cedula = alumno.cedula AND
+  alumno_materia.cod_mat = materia_espec.cod_mat AND
+  alumno_materia.id_espec = materia_espec.id_espec AND
+  materia.cod_mat = alumno_materia.cod_mat AND
+  horario_grupo."Id"=turno.id_grupo_horario AND 
+
+  fun_nota_aprobada(1,alumno_materia.nota)=true AND
+
+  graduado.cedula = $P{CEDULA}::integer AND
+  graduado.id_especial = $P{ESPECIALIDAD}::integer
+ORDER BY semter;]]>
+	</queryString>
+	<field name="cedula" class="java.lang.Long"/>
+	<field name="id_especial" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Identificador de la Especialidad.]]></fieldDescription>
+	</field>
+	<field name="nomb_espec" class="java.lang.String">
+		<fieldDescription><![CDATA[Nombre de la Especialidad]]></fieldDescription>
+	</field>
+	<field name="nomb_turno" class="java.lang.String"/>
+	<field name="Id" class="java.lang.Long"/>
+	<field name="fec_graduacion" class="java.lang.String"/>
+	<field name="libro" class="java.lang.String"/>
+	<field name="tomo" class="java.lang.String"/>
+	<field name="folio" class="java.lang.Integer"/>
+	<field name="numero" class="java.lang.String"/>
+	<field name="resolucion" class="java.lang.String"/>
+	<field name="fec_acta" class="java.sql.Date"/>
+	<field name="fec_firma" class="java.sql.Date"/>
+	<field name="reg_grado" class="java.lang.Boolean"/>
+	<field name="aranceles" class="java.lang.String"/>
+	<field name="sede" class="java.lang.String">
+		<fieldDescription><![CDATA[Sede a la cual pertenece Ej: HO=La Hoyada, SG=Sabana Grande.]]></fieldDescription>
+	</field>
+	<field name="apellidos" class="java.lang.String"/>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="nacionalidad" class="java.lang.String"/>
+	<field name="cod_mat" class="java.lang.String">
+		<fieldDescription><![CDATA[Código de materia]]></fieldDescription>
+	</field>
+	<field name="nota" class="java.lang.String">
+		<fieldDescription><![CDATA[Calificación de la materia]]></fieldDescription>
+	</field>
+	<field name="fecha" class="java.lang.String"/>
+	<field name="descrip_mat" class="java.lang.String">
+		<fieldDescription><![CDATA[Descripción de la Materia]]></fieldDescription>
+	</field>
+	<field name="uc" class="java.lang.Integer"/>
+	<field name="semter" class="java.lang.Integer"/>
+	<field name="nombre_lapso" class="java.lang.String">
+		<fieldDescription><![CDATA[Nombre del campo por el que se realiza la búsqueda del tiempo que dura un lapso o período.]]></fieldDescription>
+	</field>
+	<field name="semestre" class="java.lang.Integer">
+		<fieldDescription><![CDATA[semestre en que se dicta la asignatura]]></fieldDescription>
+	</field>
+	<field name="termino" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Término en que se dicta la signatura]]></fieldDescription>
+	</field>
+	<field name="nota_int" class="java.lang.Integer"/>
+	<field name="nota_letra" class="java.lang.String"/>
+	<field name="uc_aprob" class="java.lang.Integer"/>
+	<variable name="producto_1" class="java.lang.Integer" resetType="Column">
+		<variableExpression><![CDATA[$F{nota_int}*$F{uc_aprob}]]></variableExpression>
+	</variable>
+	<variable name="producto_2" class="java.lang.Integer" resetType="Group" resetGroup="SemTer2" calculation="Sum">
+		<variableExpression><![CDATA[$V{producto_1}]]></variableExpression>
+	</variable>
+	<variable name="uc_aprob_1" class="java.lang.Integer" resetType="Group" resetGroup="SemTer" calculation="Sum">
+		<variableExpression><![CDATA[$F{uc_aprob}]]></variableExpression>
+	</variable>
+	<variable name="uc_aprob_2" class="java.lang.Integer" resetType="Group" resetGroup="SemTer2">
+		<variableExpression><![CDATA[$V{uc_aprob_1}]]></variableExpression>
+	</variable>
+	<variable name="producto_3" class="java.lang.Double" resetType="Group" resetGroup="SemTer">
+		<variableExpression><![CDATA[ Math.round($V{producto_2}.doubleValue()/$V{uc_aprob_2}.doubleValue())*1.00]]></variableExpression>
+	</variable>
+	<variable name="promedioGeneral" class="java.lang.Double" incrementType="Group" incrementGroup="SemTer" calculation="Average">
+		<variableExpression><![CDATA[$V{producto_3}]]></variableExpression>
+	</variable>
+	<group name="SemTer">
+		<groupExpression><![CDATA[$F{semter}]]></groupExpression>
+		<groupHeader>
+			<band height="35">
+				<textField>
+					<reportElement x="1" y="13" width="320" height="20" uuid="5c32a4da-02b5-48f4-8339-19ad781e332a"/>
+					<textElement verticalAlignment="Bottom">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{semter}==1 ? "PRIMER "+$F{nombre_lapso}.toUpperCase(): 
+($F{semter}==2 ? "SEGUNDO "+$F{nombre_lapso}.toUpperCase():
+($F{semter}==3 ? "TERCER "+$F{nombre_lapso}.toUpperCase(): 
+($F{semter}==4 ? "CUARTO "+$F{nombre_lapso}.toUpperCase(): 
+($F{semter}==5 ? "QUINTO "+$F{nombre_lapso}.toUpperCase(): 
+($F{semter}==6 ? "SEXTO "+$F{nombre_lapso}.toUpperCase(): 
+($F{semter}==7 ? "SEPTIMO "+$F{nombre_lapso}.toUpperCase(): 
+($F{semter}==8 ? "OCTAVO "+$F{nombre_lapso}.toUpperCase(): "NOVENO "+$F{nombre_lapso}.toUpperCase())))))))]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="5"/>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="SemTer2">
+		<groupExpression><![CDATA[$F{semter}]]></groupExpression>
+		<groupHeader>
+			<band height="30">
+				<rectangle>
+					<reportElement x="0" y="0" width="562" height="30" uuid="fbe4e51d-fb26-466e-958e-49411853c7c7"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="1" y="10" width="210" height="13" uuid="94dc653f-535f-49ff-81c2-6d1c462dc503"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[ASIGNATURAS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="285" y="10" width="35" height="13" uuid="b01f38ca-bc16-4e65-8cd5-be7aa1e1b4d4"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[UC]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="321" y="2" width="144" height="13" uuid="21849e9b-b4d5-4b37-9685-5b8552d168d7"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[CALIFICACIÓN]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="481" y="10" width="76" height="13" uuid="42a52447-aa80-43a3-b59d-846ee61ab044"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[FECHA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="332" y="17" width="57" height="13" uuid="3e7aa2d4-fbe9-435e-826b-8954c4345041"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[NUMERO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="397" y="17" width="57" height="13" uuid="c4c8f105-48f0-4e34-8a73-b589c4b551b3"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[LETRA]]></text>
+				</staticText>
+				<line>
+					<reportElement x="321" y="15" width="145" height="1" uuid="a3df0f8c-0d97-43b6-b1e6-87df478e3cd0"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="GrupoGeneral">
+		<groupExpression><![CDATA[$F{cedula}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="209" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="18" width="285" height="20" uuid="ff8226da-0c79-48fd-b298-a3279fc99dcc"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOTAS CERTIFICADAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="386" y="67" width="175" height="20" uuid="d14a08de-1a16-42ee-a50c-9aae6e2fec2a"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Rif. J-30462995-8 Decreto 1611]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="1" y="92" width="561" height="115" uuid="dca1e283-acc7-4246-8ee6-1cb2cf805e83"/>
+				<textElement textAlignment="Justified">
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{TEXTO1}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="386" y="0" width="171" height="67" uuid="9d2d42c5-f043-452c-b0d9-082db770d649"/>
+				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="1" width="210" height="15" uuid="fdfe7a02-2c60-48d8-bebe-dbe39f17f629"/>
+				<textFieldExpression><![CDATA[$F{descrip_mat}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="285" y="1" width="35" height="15" uuid="e5444fbd-2266-49d4-b6f1-06d770439b52"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{uc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="325" y="1" width="57" height="15" uuid="74af80c4-a1b2-4ecb-93ab-ecd73c24dbdd"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{nota}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="491" y="1" width="55" height="15" uuid="bb9cf7bc-de3b-498c-b574-2182bc37cb91"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="16" width="561" height="1" uuid="03bd8d0e-a4ec-49eb-99ad-e2bffb77f244"/>
+			</line>
+			<line>
+				<reportElement x="465" y="-30" width="1" height="47" uuid="4d5eae28-1a57-494e-8b62-c4a9129fb16f"/>
+			</line>
+			<line>
+				<reportElement x="320" y="-31" width="1" height="47" uuid="6065982e-997a-4d90-8548-5942b58062ca"/>
+			</line>
+			<line>
+				<reportElement x="284" y="-30" width="1" height="47" uuid="38228539-bb15-452a-a770-c019352a4df4"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="1" height="17" uuid="6c1aca36-4661-4a19-a27d-bb649352196e"/>
+			</line>
+			<line>
+				<reportElement x="561" y="0" width="1" height="17" uuid="07bfb695-2035-43eb-95d6-61705f019241"/>
+			</line>
+			<textField>
+				<reportElement x="396" y="1" width="65" height="15" uuid="b96b5aa3-ae8a-4189-98ac-826cc27e59e6"/>
+				<textFieldExpression><![CDATA[$F{nota_letra}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="214" y="0" width="70" height="16" uuid="6286a7e4-c845-4839-9de0-a435035a40dc"/>
+				<textFieldExpression><![CDATA[$V{producto_1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="277" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="4" width="561" height="115" uuid="cf1a1c4c-e350-4209-b2a1-a8d9babade0c"/>
+				<textElement textAlignment="Justified">
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{TEXTO2}.replaceAll("<valor2>",new java.text.DecimalFormat("#0.00").format(($V{promedioGeneral})))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="222" width="55" height="15" uuid="d1e89f12-7bc2-4a99-9ca2-3e2ce14aeddc"/>
+				<text><![CDATA[Revisado]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="1" y="166" width="561" height="20" uuid="fff36222-05f0-4885-b9d1-1d1a93c74e94"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{FIRMA_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="186" width="561" height="20" uuid="94868318-d70c-4ebf-b239-1100e7e17682"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{CARGO_1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="237" width="296" height="20" uuid="0a39a197-21ff-45b5-aea9-c123b8534668"/>
+				<text><![CDATA[Departamento de Registro y Control de Estudios]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="42" y="256" width="100" height="20" uuid="213e38d8-640a-4355-80bc-a78a1c5be67d"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="3" y="256" width="36" height="20" uuid="098b6413-a6f4-44b4-a232-fb99aff0035a"/>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>
