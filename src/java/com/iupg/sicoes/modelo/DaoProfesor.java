@@ -365,7 +365,8 @@ public class DaoProfesor extends Profesor {
                 //Para generar los cuadros de texto de la distribución de las notas
                 for (int i=0;i<paramCabe.length;i++) {                
                     cuerpo = cuerpo + "<td align=\"center\"> "
-                            + "<input type=\"text\" name=\"" + rs.getString("cedula") + "\" value=\"\" size=\"2\" align=\"center\" onkeypress=\"return checkDecimal(event);\" maxlength=\"4\"/> "+
+                            + "<input type=\"text\" name=\"" + rs.getString("cedula") + "\" value=\"\" size=\"2\" align=\"center\" pattern=\"^[^\\s]+$|AP|RE\" maxlength=\"4\"/> "+
+                            //+ "<input type=\"text\" name=\"" + rs.getString("cedula") + "\" value=\"\" size=\"2\" align=\"center\" onkeypress=\"return checkDecimal(event);\" maxlength=\"4\"/> "+
                             "</td>";
                 }
                 cuerpo = cuerpo + "<td align=\"center\">  <input type=\"text\" name=\"definitivas\" value=\"--\" size=\"1\" readonly > </td>";
@@ -374,9 +375,13 @@ public class DaoProfesor extends Profesor {
                 String[] paramNotas = rs.getString("notas").split(";");
                 for (int i=0;i<paramNotas.length;i++) {
                     
-                    if (paramNotas[i].isEmpty()||paramNotas[i].trim().equals(""))
-                         cuerpo = cuerpo + "<td align=\"center\"> <input type=\"text\" name=\"" +rs.getString("cedula")+ "\" value=\"\" size=\"2\" align=\"center\" onkeypress=\"return checkDecimal(event);\" maxlength=\"4\" /> </td>";
-                    else cuerpo = cuerpo + "<td align=\"center\"> <input type=\"text\" name=\"" +rs.getString("cedula")+ "\" value=\""+ paramNotas[i].trim() + "\" size=\"2\" align=\"center\" "+permisoModificar+" /> </td>";                    
+                    if (paramNotas[i].isEmpty()||paramNotas[i].trim().equals("")) {
+                         //cuerpo = cuerpo + "<td align=\"center\"> <input type=\"text\" name=\"" +rs.getString("cedula")+ "\" value=\"\" size=\"2\" align=\"center\" onkeypress=\"return checkDecimal(event);\" maxlength=\"4\" /> </td>";
+                         cuerpo = cuerpo + "<td align=\"center\"> <input type=\"text\" name=\"" +rs.getString("cedula")+ "\" value=\"\" size=\"2\" align=\"center\"   pattern=\"^[^\\s]+$|A|RE\"     maxlength=\"4\" /> </td>";
+                    }
+                    else { 
+                        cuerpo = cuerpo + "<td align=\"center\"> <input type=\"text\" name=\"" +rs.getString("cedula")+ "\" value=\""+ paramNotas[i].trim() + "\" size=\"2\" align=\"center\" "+permisoModificar+" /> </td>";                    
+                    }   
                 }
                 cuerpo = cuerpo + "<td align=\"center\">  <input type=\"text\" name=\"definitivas\" value=\""+rs.getString("definitiva")+"\" size=\"1\" readonly > </td> ";
             }
@@ -397,6 +402,8 @@ public class DaoProfesor extends Profesor {
             "pn.notas, " +
             "pn.definitiva, " +
             "meast.seccion, " +                
+            "da.cali_esca_apro, " +
+            "da.cali_esca_repr, " +
             "da.cabe_pond, " +
             "da.dist_pond " +                
             "FROM " +
@@ -437,7 +444,8 @@ public class DaoProfesor extends Profesor {
             if (paramDist.length==notas_dist.length) {
                 for (int i=0;i<paramDist.length;i++) {
                     if (!paramDist[i].equals("-")) {
-                        if (!notas_dist[i].isEmpty()&&!notas_dist[i].equals(" ")) {
+                        // Validando que cumpla con la ponderación
+                        if (!notas_dist[i].isEmpty()&&!notas_dist[i].equals(" ")&&notas_dist[i].matches("-?\\d+(\\.\\d+)?")) {
                             if ((Double.parseDouble(notas_dist[i])) > (Double.parseDouble(paramDist[i]))) {
                                 mensaje = mensaje + " cédula "+cedula_alum +" evaluación "+ (i+1) +",";
                             }                                                                
@@ -460,7 +468,9 @@ public class DaoProfesor extends Profesor {
         String sql = "";
         String sqlInsertUpdate = "";
         
-        double definitiva = 0;
+        double definitivaNumero = 0;
+        String definitivaLetra = "";
+        String definitivaGeneral = "";
         DecimalFormat df = new DecimalFormat("#0");
 
         sql = "SELECT DISTINCT " +
@@ -469,7 +479,9 @@ public class DaoProfesor extends Profesor {
             "iad.periodo, " +                
             "pn.notas, " +
             "pn.definitiva, " +
-            "meast.seccion, " +                
+            "meast.seccion, " +
+            "da.cali_esca_apro, " +
+            "da.cali_esca_repr, " +
             "da.cabe_pond, " +
             "da.dist_pond " +                
             "FROM " +
@@ -507,21 +519,31 @@ public class DaoProfesor extends Profesor {
             if (paramDist.length==notas_dist.length) {
                 for (int i=0;i<paramDist.length;i++) {
                     if (!paramDist[i].equals("-")) {
-                        if (!notas_dist[i].isEmpty()&&!notas_dist[i].equals(" ")) {
-                            definitiva = definitiva + Double.parseDouble(notas_dist[i]);
-                        } 
+                        if (notas_dist[i].toUpperCase().equals(rs.getString("cali_esca_apro"))||notas_dist[i].toUpperCase().equals(rs.getString("cali_esca_repr"))) {
+                            definitivaLetra = notas_dist[i].toUpperCase();
+                        } else if (!notas_dist[i].isEmpty()&&!notas_dist[i].equals(" ")&&notas_dist[i].matches("-?\\d+(\\.\\d+)?")) {
+                                definitivaNumero = definitivaNumero + Double.parseDouble(notas_dist[i]);                            
+                        }
+                        
                     }
                 }
-            }       
-            
+            }   
+            // Para la definitiva en Letra
+            if (!definitivaLetra.isEmpty()&&!definitivaLetra.equals("")) {
+                definitivaGeneral=definitivaLetra;
+            } else // Definitiva en número 
+            {
+                definitivaGeneral=String.valueOf(Math.round(definitivaNumero+0.05));
+            }
+                        
             //Para asegurar que el registro ya esté guardado       
             if (rs.getString("definitiva")==null) {
                 sqlInsertUpdate = "INSERT INTO profesor_notas (id_inscripcion_alumno_detalle, notas, definitiva, id_usuario) VALUES (";
-                sqlInsertUpdate = sqlInsertUpdate + "'" + rs.getString("Id") + "', '" + notas_alum + "','" + Math.round(definitiva+0.05) + "','" + id_usu + "'); ";                            
+                sqlInsertUpdate = sqlInsertUpdate + "'" + rs.getString("Id") + "', '" + notas_alum + "','" + definitivaGeneral + "','" + id_usu + "'); ";                            
                                                                 
             } else if (!notas_alum.trim().equals(rs.getString("notas").trim())) {                                
                 sqlInsertUpdate = "UPDATE profesor_notas " + 
-                "SET  notas = '" + notas_alum + "', definitiva = '" + Math.round(definitiva+0.05) + "', id_usuario = '" + id_usu + "' " +
+                "SET  notas = '" + notas_alum + "', definitiva = '" + definitivaGeneral + "', id_usuario = '" + id_usu + "' " +
                 "WHERE id_inscripcion_alumno_detalle = '" + rs.getString("Id") + "'; ";
             }
                         
@@ -619,6 +641,7 @@ public class DaoProfesor extends Profesor {
               "INNER JOIN horario h ON (h.\"Id\"=ph.id_horario) INNER JOIN " +
               "profesor p ON (p.cedula=ph.cedula) " +
               "WHERE meast.\"Id\" = " + idMatEspAulSecTur + " " +
+              "AND meast.periodo = '" + periodo + "' " +
               "GROUP BY p.cedula, p.apellidos, p.nombres, meast.cod_mat, meast.seccion, " +
               "meast.id_turno, meast.aula, h.dia, h.id_turno; ";
 
