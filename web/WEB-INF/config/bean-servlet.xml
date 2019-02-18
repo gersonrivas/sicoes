@@ -34,6 +34,9 @@
         <bean id="cargaNotasProfesorAdminController" class="com.iupg.sicoes.controlador.CargaNotasProfesorAdminController" />
         <bean id="buscarAlumnoCedulaPeriodoAdminController" class="com.iupg.sicoes.controlador.BuscarAlumnoCedulaPeriodoAdminController" />
         <bean id="pasarAGradoController" class="com.iupg.sicoes.controlador.PasarAGradoController" />
+        
+        <bean id="xgraduadoDetalleController" class="com.iupg.sicoes.controlador.XGraduadoDetalleController" />
+        
         <bean id="graduadoController" class="com.iupg.sicoes.controlador.GraduadoController" />
         <!-- Perfil Administrativo del Sistema -->
         <bean id="usuariosAdminController" class="com.iupg.sicoes.controlador.UsuariosAdminController" />
