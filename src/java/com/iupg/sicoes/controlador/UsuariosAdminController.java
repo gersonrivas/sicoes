@@ -75,52 +75,7 @@ public class UsuariosAdminController extends AbstractController {
             String tablaDetalle = daoUsuario.BuscarListaUsuarios(daoConexion.ConexionBD());
             misession.setAttribute("detalleListaUsuariosSession", tablaDetalle);
             
-            
-            
-            
-            
-            /*if (tablaDetalle.isEmpty()) {
-                //Validando que haya seleccionado un profesor de la lista
-                
-                if (request.getParameter("cedula")!=null && !"".equals(request.getParameter("cedula"))) {
-                    //daoProfesor.setCedula(request.getParameter("cedula"));
-                    //daoGeneral.setCedula(request.getParameter("cedula"));
-                    cedulaProf=request.getParameter("cedula");
-                } else {                    
-                    if (request.getParameter("nombreApellido")!=null && !"".equals(request.getParameter("nombreApellido"))) {
-                        nombreApellido=request.getParameter("nombreApellido");
-                    } else {                
-                        if (request.getParameter("profesor")!=null && !"lbElige".equals(request.getParameter("profesor")) && (!"lbSinProfesor".equals(request.getParameter("profesor")))) {
-                            //daoProfesor = new DaoProfesor(cedulaProf);
-                            //daoProfesor.setCedula(cedulaProf);
-                            daoGeneral.setCedula(cedulaProf);
-                            daoProfesor.setIdMatEspAulSecTur(Integer.valueOf(misession.getAttribute("idMatEspAulSecTurSession").toString()));
-                            daoGeneral.setIdMatEspAulSecTur(Integer.valueOf(misession.getAttribute("idMatEspAulSecTurSession").toString()));
-                        }
-                    }
-                }
-                
-                //Inicilizo variable de sesion para el manejo del filtro de profesores.
-                String datosProfesor = daoProfesor.BuscarDatosProfesorHorarios(daoConexion.ConexionBD());
-                daoProfesor = new DaoProfesor(cedulaProf);
-                daoProfesor.setNombres(nombreApellido);
-                String opcionesProfesor = daoProfesor.BuscarProfesores(daoConexion.ConexionBD());
-                misession.setAttribute("datosProfesorSession", datosProfesor+"<BR>"+opcionesProfesor);
-                misession.setAttribute("profesorSeleccionadoSession", request.getParameter("profesor"));
-                    
-                //misession.setAttribute("botonSession", "<input name=\"action\" type=\"submit\" id=\"adicionar\" value=\"Adicionar\" />"); 
-                    
-            } else {                    
-                String datosProfesor = daoProfesor.BuscarDatosProfesorHorarios(daoConexion.ConexionBD());
-                misession.setAttribute("datosProfesorSession", datosProfesor);
-                
-                String[] datos = datosProfesor.split(" ");    
-                
-                daoProfesor.setCedula(datos[2]);
-                daoGeneral.setCedula(datos[2]);
-               
-            }
-            */            
+                                
             //Guardando los valores selccionados
             if (request.getParameter("categoria")!=null) {
                 daoUsuario.setTipoUsu(request.getParameter("categoria").substring(2, request.getParameter("categoria").length()));
