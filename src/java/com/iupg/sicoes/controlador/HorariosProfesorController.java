@@ -54,16 +54,18 @@ public class HorariosProfesorController extends AbstractController {
             daoConexion = new DaoConexion();
             String botones="";
             
-            // Para guardar la variable de sesión recibida del JSP
+            // Para guardar la variable de sesión recibida del JSP            
             if (request.getParameter("idMatEspAulSecTurSession")==null) {                
                 daoProfesor.setIdMatEspAulSecTur(Integer.valueOf(misession.getAttribute("idMatEspAulSecTurSession").toString()));
                 daoGeneral.setIdMatEspAulSecTur(Integer.valueOf(misession.getAttribute("idMatEspAulSecTurSession").toString()));
                 daoGeneral.setPeriodo(misession.getAttribute("periodoSeleccionadoSession").toString());
+                daoProfesor.setPeriodo(misession.getAttribute("periodoSeleccionadoSession").toString());
             } else {
                 daoProfesor.setIdMatEspAulSecTur(Integer.valueOf(request.getParameter("idMatEspAulSecTurSession")));
                 daoGeneral.setIdMatEspAulSecTur(Integer.valueOf(request.getParameter("idMatEspAulSecTurSession")));
                 misession.setAttribute("idMatEspAulSecTurSession", request.getParameter("idMatEspAulSecTurSession"));
                 daoGeneral.setPeriodo(request.getParameter("periodoSeleccionadoSession"));
+                daoProfesor.setPeriodo(request.getParameter("periodoSeleccionadoSession"));
             }
             
             //Para desplegar la tabla de horarios
