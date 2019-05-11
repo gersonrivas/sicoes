@@ -178,6 +178,8 @@ public class XGraduadoDetalleController extends AbstractController {
 
         try {
 
+        System.out.println("Entrando A ImprimirActa.....>......");
+            
         ServletOutputStream out = response.getOutputStream();
         String plantilla=ParamConfig.getString("reporte.archivoReporteActasGrado");  
         File theFile = new File(plantilla);
