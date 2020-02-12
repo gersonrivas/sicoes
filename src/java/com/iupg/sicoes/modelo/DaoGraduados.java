@@ -40,6 +40,8 @@ public class DaoGraduados extends Graduados {
             " alumno.tel_hab, " +
             " alumno.tel_ofc, " +
             " alumno.tel_cel, " +
+            " alumno.lugar_nac, " +
+            " alumno.fec_nac, " +
             " graduado.id_especial, " +
             " especialidad.nomb_espec, " +                
             " graduado.id_turno, " +
@@ -78,9 +80,12 @@ public class DaoGraduados extends Graduados {
             this.setNombres(rs.getString("nombres"));
             this.setCodEspecialidad(rs.getString("id_especial"));
             this.setEspecialidad(rs.getString("nomb_espec"));
+            this.setLugarNac(rs.getString("lugar_nac"));
+            this.setFecNac(rs.getString("fec_nac"));
             this.setTurno(rs.getString("nomb_turno"));
             this.setTomo(rs.getString("tomo"));
             this.setFolio(rs.getString("folio"));
+            this.setLibro(rs.getString("libro"));
             this.setNumero(rs.getString("numero")); 
             this.setResolucion(rs.getString("resolucion"));
             this.setFecActa(rs.getString("fec_acta"));
@@ -113,6 +118,8 @@ public class DaoGraduados extends Graduados {
             " alumno.tel_hab, " +
             " alumno.tel_ofc, " +
             " alumno.tel_cel, " +
+            " alumno.lugar_nac, " +
+            " alumno.fec_nac, " +
             " graduado.id_especial, " +
             " especialidad.nomb_espec, " +                
             " graduado.id_turno, " +
@@ -237,7 +244,8 @@ public class DaoGraduados extends Graduados {
             " ON (turno.\"Id\" = graduado.id_turno) " +
             " WHERE graduado.sede = '"+ sede +"' " +
             " AND graduado.id_especial = '"+ codEspecialidad +"' " +
-            " AND graduado.fec_graduacion = '"+ fecGraduacion + "' ;";
+            " AND graduado.fec_graduacion = '"+ fecGraduacion + "' " +
+            " ORDER BY alumno.apellidos, alumno.nombres;";
         
         System.out.println(sql);        
         PreparedStatement ps;        
@@ -265,7 +273,8 @@ public class DaoGraduados extends Graduados {
                                 "</th> " +
                             "</tr>";
         
-        if (rs.next()) {
+        //if (rs.next()) {
+        while (rs.next()) {
             
             listado = listado + "<tr align=\"center\">" +
                                     "<td align=\"center\"> " +
