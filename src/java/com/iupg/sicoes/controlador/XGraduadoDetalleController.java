@@ -14,6 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -92,14 +96,15 @@ public class XGraduadoDetalleController extends AbstractController {
                     switch (accion) {
                         case "Editar":
                             botones = botones + "<input name=\"action\" type=\"submit\" id=\"guardar\" value=\"Guardar\" />";
-                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"cancelar\" value=\"Cancelar\" />";                            
+                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"cancelar\" value=\"Cancelar\" />";
                             tablaDetalle = daoGraduados.BuscarDatosGraduado(daoConexion.ConexionBD(),"");
                             misession.setAttribute("detalleGraduadoSession", tablaDetalle);
                             break;
                         
                         case "Guardar":
-                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"editar\" value=\"Editar\" />";
-                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"actaGrado\" value=\"Acta de Grado\" />";
+                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"editar\" value=\"Editar\" /> &nbsp;";
+                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"notasCertificadas\" value=\"Notas Certificadas\" /> &nbsp;";
+                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"actaGrado\" value=\"Acta de Grado\" /> &nbsp;";
                             
                             String[] libro = request.getParameterValues("flibro");
                             String[] tomo = request.getParameterValues("ftomo");
@@ -131,19 +136,32 @@ public class XGraduadoDetalleController extends AbstractController {
                             tablaDetalle = daoGraduados.BuscarDatosGraduado(daoConexion.ConexionBD(),"readonly");
                             break;
                             
-                        case "Acta de Grado":
-                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"editar\" value=\"Editar\" />";
-                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"actaGrado\" value=\"Acta de Grado\" />";                            
-                            
-                            this.imprimirActa(response, daoGraduados.getCedula());
+                        case "Notas Certificadas":
+                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"editar\" value=\"Editar\" /> &nbsp;";
+                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"notasCertificadas\" value=\"Notas Certificadas\" /> &nbsp;";
+                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"actaGrado\" value=\"Acta de Grado\" /> &nbsp;";
+
+                            this.imprimirNotasCertificadas(response, daoGraduados.getCedula());
                             mensaje = "Imprimiendo.....";
                             break;
+                            
+                        case "Acta de Grado":
+                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"editar\" value=\"Editar\" &nbsp;/>";
+                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"notasCertificadas\" value=\"Notas Certificadas\" /> &nbsp;";
+                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"actaGrado\" value=\"Acta de Grado\" /> &nbsp;";
+                            
+                            this.imprimirActaGrado(response, daoGraduados.getCedula());
+                            mensaje = "Imprimiendo.....";
+                            break;
+                            
 
                         case "Cancelar":
                             //Para adicionar horarios unificados en todas las especilidades
                             //mensaje = daoGeneral.AdicionarHorarioProfesor(daoConexion.ConexionBD());                            
-                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"editar\" value=\"Editar\" />";
-                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"actaGrado\" value=\"Acta de Grado\" />";
+                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"editar\" value=\"Editar\" /> &nbsp;";
+                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"notasCertificadas\" value=\"Notas Certificadas\" /> &nbsp;";
+                            botones = botones + "<input name=\"action\" type=\"submit\" id=\"actaGrado\" value=\"Acta de Grado\" /> &nbsp;";
+
                             mensaje = "Cancelado.....";
                             break;
                         case "Retornar": {
@@ -159,8 +177,10 @@ public class XGraduadoDetalleController extends AbstractController {
               
             } else {                    
                 // else del POST               
-                botones = botones + "<input name=\"action\" type=\"submit\" id=\"editar\" value=\"Editar\" />";
-                botones = botones + "<input name=\"action\" type=\"submit\" id=\"actaGrado\" value=\"Acta de Grado\" />";
+                botones = botones + "<input name=\"action\" type=\"submit\" id=\"editar\" value=\"Editar\" /> &nbsp;";
+                botones = botones + "<input name=\"action\" type=\"submit\" id=\"notasCertificadas\" value=\"Notas Certificadas\" /> &nbsp;";
+                botones = botones + "<input name=\"action\" type=\"submit\" id=\"actaGrado\" value=\"Acta de Grado\" /> &nbsp;";
+
             }
             //Para construir la tabla
             misession.setAttribute("detalleGraduadoSession", tablaDetalle);
@@ -174,14 +194,14 @@ public class XGraduadoDetalleController extends AbstractController {
         return modelAndView;           
     }
     
-    public void imprimirActa( HttpServletResponse response, String cedulaGraduado) throws JRException, IOException, SQLException {
+    public void imprimirNotasCertificadas( HttpServletResponse response, String cedulaGraduado) throws JRException, IOException, SQLException {
 
         try {
 
-        System.out.println("Entrando A ImprimirActa.....>......");
+        System.out.println("Entrando A Imprimir Notas Certificadas.....>......");
             
         ServletOutputStream out = response.getOutputStream();
-        String plantilla=ParamConfig.getString("reporte.archivoReporteActasGrado");  
+        String plantilla=ParamConfig.getString("reporte.archivoReporteNotasCertificadas");  
         File theFile = new File(plantilla);
         JasperReport reporte = (JasperReport) JRLoader.loadObject(theFile);
                         
@@ -210,13 +230,117 @@ public class XGraduadoDetalleController extends AbstractController {
             textoFinal = textoFinal.replace("<valor5>", daoGeneral.numerosLetras(daoConexion.ConexionBD(), cal.get(Calendar.YEAR)));
             
             Map<String, Object> parametros = new HashMap();
-            parametros.put("TEXTO1", new String(textoInicial));
+            parametros.put("TEXTO1", new String(textoInicial.trim()));
             parametros.put("CEDULA", new String(daoGraduados.getCedula()));
             parametros.put("ESPECIALIDAD", new String(daoGraduados.getCodEspecialidad()));
-            parametros.put("TEXTO2", new String(textoFinal));
+            parametros.put("TEXTO2", new String(textoFinal.trim()));
             parametros.put("LOGO", new String(ParamConfig.getString("reporte.archivoImagenLogo")));
             parametros.put("FIRMA_1", new String(daoGeneral.reporte(daoConexion.ConexionBD(), "CE01", "firma_1")));
             parametros.put("CARGO_1", new String(daoGeneral.reporte(daoConexion.ConexionBD(), "CE01", "cargo_1")));
+                            
+            JasperPrint print = JasperFillManager.fillReport(reporte, parametros, daoConexion.ConexionBD());
+                        
+            JRPdfExporter exporter = new JRPdfExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
+            exporter.exportReport();                            
+            // Fin Exportar            
+        } 
+        
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+            
+                                    
+    }
+    
+    
+    public void imprimirActaGrado( HttpServletResponse response, String cedulaGraduado) throws JRException, IOException, SQLException {
+
+        try {
+
+        System.out.println("Entrando A ImprimirActa.....>......");
+            
+        ServletOutputStream out = response.getOutputStream();
+        String plantilla=ParamConfig.getString("reporte.archivoReporteActasGrado");  
+        File theFile = new File(plantilla);
+        JasperReport reporte = (JasperReport) JRLoader.loadObject(theFile);
+                        
+
+        DaoGraduados daoGraduados = new DaoGraduados(cedulaGraduado);
+        DaoGeneral daoGeneral = new DaoGeneral();
+        
+        if (daoGraduados.BuscarDatosGraduado(daoConexion.ConexionBD())) {
+            
+            NumberFormat formatter = NumberFormat.getInstance(new Locale("en_VE"));
+            String textoInicial = daoGeneral.reporte(daoConexion.ConexionBD(), "CE02", "texto1");            
+            
+            Date fechaGraduacion=new SimpleDateFormat("yyyy-MM-dd").parse(daoGraduados.getFecActa());  
+            SimpleDateFormat DATE_FORMAT_DIA = new SimpleDateFormat("d");
+            SimpleDateFormat DATE_FORMAT_MES = new SimpleDateFormat("MMMM");
+            SimpleDateFormat DATE_FORMAT_ANO = new SimpleDateFormat("yyyy");
+            
+            //Date date2=new SimpleDateFormat("yyyy-MM-dd").format(date1).;  
+            
+            textoInicial = textoInicial.replace("<valor1>", DATE_FORMAT_DIA.format(fechaGraduacion) + " de " + Character.toUpperCase(DATE_FORMAT_MES.format(fechaGraduacion).charAt(0)) + DATE_FORMAT_MES.format(fechaGraduacion).substring(1) + " de " + DATE_FORMAT_ANO.format(fechaGraduacion));
+            textoInicial = textoInicial.replace("<valor2>", daoGraduados.getApellidos() + " " + daoGraduados.getNombres());
+            textoInicial = textoInicial.replace("<valor3>", daoGraduados.getLugarNac().trim());
+            
+            //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                        
+            //LocalDateTime fechaNac = LocalDateTime.parse(daoGraduados.getFecNac(), formatter);
+            //LocalDateTime fechaNac = LocalDateTime.parse(daoGraduados.getFecNac());
+            //LocalDateTime fechaAct = LocalDateTime.parse(daoGraduados.getFecActa());
+                    
+            //Date fechaNac=new SimpleDateFormat("yyyy-MM-dd").parse(daoGraduados.getFecNac());  
+            //Date fechaAct=new SimpleDateFormat("yyyy-MM-dd").parse(daoGraduados.getFecActa());  
+            //Date fechaNac=new SimpleDateFormat("dd/MM/yyyy").parse(daoGraduados.getFecAc|ta);  
+            //Date fechaAct=new SimpleDateFormat("dd/MM/yyyy").parse(daoGraduados.getFecActa());  
+            
+            //long edad = ChronoUnit.YEARS.between(fechaNac, fechaAct);
+            //int years = fechaActual.get(Calendar.YEAR) - fechaNac.get(Calendar.YEAR);
+            
+            Calendar fechaNac = Calendar.getInstance();
+            Calendar fechaAct = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            fechaNac.setTime(sdf.parse(daoGraduados.getFecNac().trim()));
+            fechaAct.setTime(sdf.parse(daoGraduados.getFecActa().trim()));
+
+            int anios = fechaAct.get(Calendar.YEAR) - fechaNac.get(Calendar.YEAR);
+
+            textoInicial = textoInicial.replace("<valor4>", String.valueOf(anios));
+            textoInicial = textoInicial.replace("<valor5>", daoGraduados.getCedula().trim());
+            textoInicial = textoInicial.replace("<valor6>", daoGraduados.getEspecialidad().trim());
+            textoInicial = textoInicial.replace("<valor7>", daoGraduados.getLibro().trim());
+            textoInicial = textoInicial.replace("<valor8>", daoGraduados.getTomo().trim());
+            textoInicial = textoInicial.replace("<valor9>", daoGraduados.getFolio().trim());
+            textoInicial = textoInicial.replace("<valor10>", daoGraduados.getNumero().trim());
+            textoInicial = textoInicial.replace("<valor11>", daoGraduados.getApellidos() + " " + daoGraduados.getNombres());
+            
+            
+            //textoInicial = textoInicial.replace("<valor3>", daoGraduados.getCedula());
+            //textoInicial = textoInicial.replace("<valor4>", daoGraduados.getEspecialidad());
+            
+            //Date fecha = new Date();
+            //Calendar cal = Calendar.getInstance();
+            //cal.setTime(fecha);  
+            
+            //String textoFinal = daoGeneral.reporte(daoConexion.ConexionBD(), "CE01", "texto2");            
+            //textoFinal = textoFinal.replace("<valor1>", "103");
+            ////textoFinal = textoFinal.replace("<valor2>", "20,00");
+            //textoFinal = textoFinal.replace("<valor3>", daoGeneral.numerosLetras(daoConexion.ConexionBD(), cal.get(Calendar.DAY_OF_MONTH)));
+            //textoFinal = textoFinal.replace("<valor4>", daoGeneral.mesLetras(daoConexion.ConexionBD(), cal.get(Calendar.MONTH)));
+            //textoFinal = textoFinal.replace("<valor5>", daoGeneral.numerosLetras(daoConexion.ConexionBD(), cal.get(Calendar.YEAR)));
+            
+            Map<String, Object> parametros = new HashMap();
+            parametros.put("TEXTO1", new String(textoInicial));
+            parametros.put("CEDULA", new String(daoGraduados.getCedula()));
+            parametros.put("ESPECIALIDAD", new String(daoGraduados.getCodEspecialidad()));
+            ////parametros.put("TEXTO2", new String(textoFinal));
+            parametros.put("LOGO", new String(ParamConfig.getString("reporte.archivoImagenLogo")));
+            parametros.put("FIRMA_1", new String(daoGeneral.reporte(daoConexion.ConexionBD(), "CE02", "firma_1")));
+            parametros.put("CARGO_1", new String(daoGeneral.reporte(daoConexion.ConexionBD(), "CE02", "cargo_1")));
                             
             JasperPrint print = JasperFillManager.fillReport(reporte, parametros, daoConexion.ConexionBD());
                         
@@ -237,6 +361,8 @@ public class XGraduadoDetalleController extends AbstractController {
             
                                     
     }
+    
+    
     
     
 }
