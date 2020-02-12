@@ -68,25 +68,36 @@ public class GraduadoController extends AbstractController {
                         misession.setAttribute("sedeGraduadoSession", opcionesSede);
                         misession.setAttribute("sedeSeleccionadaSession", request.getParameter("sede"));
                     
-                        //if (!"lbElige".equals(request.getParameter("especialidad")) && (!"lbSinEspecialidad".equals(request.getParameter("especialidad")))) {
-                        daoGraduados.setCodEspecialidad(request.getParameter("especialidad").substring(2, request.getParameter("especialidad").length()));
-                        String opcionesEspecialidad = daoGraduados.BuscarEspecialidad(daoConexion.ConexionBD());
-                        misession.setAttribute("especialidadGraduadoSession", opcionesEspecialidad);
-                        misession.setAttribute("especialidadSeleccionadaSession", request.getParameter("especialidad"));                            
-                        //}
-                        daoGraduados.setFecGraduacion(request.getParameter("fecha_graduacion").substring(2, request.getParameter("fecha_graduacion").length()));
-                        String opcionesFechaGraduacion = daoGraduados.BuscarFechaGraduacion(daoConexion.ConexionBD());
-                        misession.setAttribute("fechaGraduacionGraduadoSession", opcionesFechaGraduacion);
-                        misession.setAttribute("fechaGraduadoSeleccionadaSession", request.getParameter("fecha_graduacion"));                            
-                        
+                        if (!"lbElige".equals(request.getParameter("especialidad")) && (!"lbSinEspecialidad".equals(request.getParameter("especialidad")))) {
+                            daoGraduados.setCodEspecialidad(request.getParameter("especialidad").substring(2, request.getParameter("especialidad").length()));
+                            String opcionesEspecialidad = daoGraduados.BuscarEspecialidad(daoConexion.ConexionBD());
+                            misession.setAttribute("especialidadGraduadoSession", opcionesEspecialidad);
+                            misession.setAttribute("especialidadSeleccionadaSession", request.getParameter("especialidad"));                            
+                                                
+                                daoGraduados.setFecGraduacion(request.getParameter("fecha_graduacion").substring(2, request.getParameter("fecha_graduacion").length()));
+                                String opcionesFechaGraduacion = daoGraduados.BuscarFechaGraduacion(daoConexion.ConexionBD());
+                                misession.setAttribute("fechaGraduacionGraduadoSession", opcionesFechaGraduacion);
+                                misession.setAttribute("fechaGraduadoSeleccionadaSession", request.getParameter("fecha_graduacion"));                            
+
+
+                            if (!"lbElige".equals(request.getParameter("fecha_graduacion")) && (!"lb0".equals(request.getParameter("fecha_graduacion")))) {
+
+                                String listadoGraduados = daoGraduados.ListarGraduados(daoConexion.ConexionBD());
+                                misession.setAttribute("listadoGraduadosSession", listadoGraduados);
+                            } else {
+                                misession.setAttribute("listadoGraduadosSession", "");
+                            }
+                        }
                     }
                     
+                    /*
                     if (!"lbElige".equals(request.getParameter("fecha_graduacion")) && (!"lb0".equals(request.getParameter("fecha_graduacion")))) {
                         String listadoGraduados = daoGraduados.ListarGraduados(daoConexion.ConexionBD());
                         misession.setAttribute("listadoGraduadosSession", listadoGraduados);
                     } else {
                         misession.setAttribute("listadoGraduadosSession", "");
                     }
+                    */
                     
                 } else { // Si presiona Botón Salir
                     mensaje = "";
