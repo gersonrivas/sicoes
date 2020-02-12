@@ -19,6 +19,8 @@ public class Graduados {
     protected String especialidad;
     protected String codTurno;
     protected String turno;
+    protected String lugarNac;
+    protected String fecNac;
     protected String fecGraduacion;
     protected String libro;
     protected String tomo;
@@ -69,8 +71,23 @@ public class Graduados {
         this.nombres = nombres;
     }
 
+    public String getLugarNac() {
+        return lugarNac;
+    }
+
+    public void setLugarNac(String lugarNac) {
+        this.lugarNac = lugarNac;
+    }
     
-    
+
+    public String getFecNac() {
+        return fecNac;
+    }
+
+    public void setFecNac(String fecNac) {
+        this.fecNac = fecNac;
+    }
+
     public String getCodEspecialidad() {
         return codEspecialidad;
     }
