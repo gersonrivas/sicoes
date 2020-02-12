@@ -27,7 +27,7 @@ and open the template in the editor.
         <property name="port" value="587" />
         <property name="protocol"><value>smtp</value></property>
         <property name="username" value="dilmarag.registrocontrol.iupg@gmail.com" />
-        <property name="password" value="04242188661" />
+        <property name="password" value="dg04242188661" />
               
         <property name="javaMailProperties">
             <props>
