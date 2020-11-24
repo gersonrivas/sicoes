@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Calendar;
 
 /**
  * 
@@ -112,6 +113,55 @@ public class DaoGeneral extends General {
         return selectPeriodo;
     }   
     
+
+     /**
+     * Método para buscar los períodos activos devolviéndolos en un combo jsp, para cualquier usuario
+     * @param conexion
+     * @return
+     * @throws SQLException 
+     */
+    
+    public String BuscarPeriodos(Connection conexion) throws SQLException {
+        String sql;
+        String selectPeriodo = "";
+        String optionsPeriodo = "";
+        int i=0;
+        
+        sql = "SELECT " +
+              "p.periodo " +
+              "FROM " +
+              "public.periodo p " +
+              "ORDER BY \"Id\" DESC;";
+        
+        //System.out.println(sql);        
+        PreparedStatement ps;        
+        ps = conexion.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        selectPeriodo = "<select name=\"periodo\" onchange=\"form.submit()\" id=\"periodo\" >"; 
+        
+        while (rs.next()) {
+            i++;
+            if (rs.getString("periodo").equals(periodo)) {
+                optionsPeriodo = optionsPeriodo + "<option value=\""+rs.getString("periodo")+"\" selected >"+rs.getString("periodo");
+            } else {
+                optionsPeriodo = optionsPeriodo + "<option value=\""+rs.getString("periodo")+"\"  >"+rs.getString("periodo");
+            }
+        }
+        
+        
+        if (periodo == null || periodo.equalsIgnoreCase("") || periodo.equalsIgnoreCase("Elige")) {
+            optionsPeriodo =  "<option value=\"lbElige\" selected>Elige" + optionsPeriodo;
+        } 
+        if (i==0) {
+            optionsPeriodo =  "<option value=\"lbSinPeriodo\" selected>Sin Período";
+        }
+        selectPeriodo = selectPeriodo + optionsPeriodo + "</select>";
+
+        return selectPeriodo;
+    }   
+
+
     /**
      * Método que calcula los trimestres y semestres del período.
      * @param conexion
@@ -523,7 +573,7 @@ public class DaoGeneral extends General {
                                               "<td align=\"center\">"+rs.getString("nomb_turno")+"</td>"+ 
                                               "<td align=\"center\"><a href=\"horariosProfesor.do?idMatEspAulSecTurSession="+rs.getString("Id")+"&periodoSeleccionadoSession="+rs.getString("periodo")+"\">"+rs.getString("seccion")+"</a></td>"+ 
                                               "<td align=\"center\">"+rs.getString("aula")+"</td>"+
-                                              "<td align=\"center\">"+rs.getString("inscritos")+"</td></tr>";
+                                              "<td align=\"center\"><a href=\"alumnosInscritos.do?idMatEspAulSecTurSession="+rs.getString("Id")+"\">"+rs.getString("inscritos")+"</a></td></tr>";
         }
 
         conexion.close();
@@ -1142,5 +1192,365 @@ public class DaoGeneral extends General {
         
     }
 
+    
+    
+     /**
+     * Método que busca las secciones creadas en un período.
+     * @param conexion
+     * @return
+     * @throws SQLException 
+     */
+    public String BuscarDatosPeriodoAcademico(Connection conexion)  throws SQLException {
+        String sql;
+        String datosPeriodo = "";
+        String optionsEstatusPeriodo = "";
+        
+        //Buscar las asignaturas inscritas
+
+        sql = "SELECT " +
+              "p.\"Id\", " +
+              "p.periodo, " +
+              "p.fec_ini, " +
+              "p.fec_fin, " +
+              "p.descrip, " +
+              "p.estatus, " +
+              "p.fec_ini_insc, " +
+              "p.fec_fin_insc, " +
+              "p.fec_ini_raa, " +
+              "p.fec_fin_raa, " +
+              "p.id_grupo_horario " +
+              "FROM periodo p " + 
+              "WHERE p.periodo = '" + periodo + "';";
+        
+        System.out.println("sql--->"+sql);
+        
+        //System.out.println("sql=====>"+sql);         
+        PreparedStatement ps;        
+        ps = conexion.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        if (rs.next()) {
+            
+            datosPeriodo =  "<tr><td align=\"right\">Fecha Inicio:</td> <td align=\"left\">  <input type=\"date\" id=\"fec_ini\" name=\"fec_ini\" value=\"" + rs.getString("fec_ini").toString().substring(0,10) +"\" align=\"center\"/> </td> </tr>";
+            datosPeriodo =  datosPeriodo + "<tr><td align=\"right\">Fecha Fin:</td> <td align=\"left\"> <input type=\"date\" id=\"fec_fin\" name=\"fec_fin\" value=\"" + rs.getString("fec_fin").toString().substring(0,10) + "\" align=\"center\"/></td> </tr>";
+            datosPeriodo =  datosPeriodo + "<tr><td align=\"right\">Descripción:</td> <td align=\"left\"> <input type=\"text\" id=\"descrip\" name=\"descrip\" value=\"" + rs.getString("descrip") + "\" align=\"center\"/> </td> </tr>";
+            
+            optionsEstatusPeriodo =  "<select name=\"estatus\"  onchange=\"form.submit()\" id=\"hora_ini\" >" +                    
+                                     "<option value=\"lbA\" >Abierto</option>" +
+                                     "<option value=\"lbC\" >Cerrado</option>" +
+                                     "<option value=\"lbP\" >Próximo</option>" +
+                                     "</select>";
+                        
+            if (estatus==null || estatus.equalsIgnoreCase("")) {
+                estatus = rs.getString("estatus");
+            }
+            
+            
+            switch(estatus) {
+                case "A" : optionsEstatusPeriodo = optionsEstatusPeriodo.replace("lbA\"", "lbA\" selected");
+                break;
+                case "C" : optionsEstatusPeriodo = optionsEstatusPeriodo.replace("lbC\"", "lbC\" selected");
+                break;
+                case "P" : optionsEstatusPeriodo = optionsEstatusPeriodo.replace("lbP\"", "lbP\" selected");
+                break;
+            }
+            
+            datosPeriodo =  datosPeriodo + "<tr><td align=\"right\">Estatus:</td> <td align=\"left\"> " + optionsEstatusPeriodo + " </td> </tr>";
+            
+            datosPeriodo =  datosPeriodo + "<tr><td align=\"right\">Fecha Inicio de Inscripción:</td> <td align=\"left\"> <input type=\"date\" id=\"fec_ini_insc\" name=\"fec_ini_insc\" value=\"" + rs.getString("fec_ini_insc").toString().substring(0,10) + "\" align=\"center\"/></td> </tr>";
+            datosPeriodo =  datosPeriodo + "<tr><td align=\"right\">Fecha Fin de Inscripción:</td> <td align=\"left\"> <input type=\"date\" id=\"fec_fin_insc\" name=\"fec_fin_insc\" value=\"" + rs.getString("fec_fin_insc").toString().substring(0,10) + "\" align=\"center\"/></td> </tr>";
+            
+            datosPeriodo =  datosPeriodo + "<tr><td align=\"right\">Fecha Inicio Retiro Asignaturas:</td> <td align=\"left\"> <input type=\"date\" id=\"fec_ini_raa\" name=\"fec_ini_raa\" value=\"" + rs.getString("fec_ini_raa").toString().substring(0,10) + "\" align=\"center\"/></td> </tr>";
+            datosPeriodo =  datosPeriodo + "<tr><td align=\"right\">Fecha Fin Retiro Asignaturas:</td> <td align=\"left\"> <input type=\"date\" id=\"fec_fin_raa\" name=\"fec_fin_raa\" value=\"" + rs.getString("fec_fin_raa").toString().substring(0,10) + "\" align=\"center\"/></td> </tr>";
+      
+            
+            
+            datosPeriodo =  datosPeriodo + "<tr><td align=\"right\">Horario del Período:</td> <td align=\"left\"> "+BuscarDatosHorariosPeriodo(conexion)+"</td> </tr>";
+
+        }
+        
+        conexion.close();
+        return datosPeriodo;
+    }
+
+
+     /**
+     * Método que busca las secciones creadas en un período.
+     * @param conexion
+     * @return
+     * @throws SQLException 
+     */
+    public String BuscarDatosPeriodoAdministrativo(Connection conexion)  throws SQLException {
+        String sql;
+        String datosPeriodo = "";
+        String optionsDivisasPeriodo = "";
+       
+        
+        //Buscar las asignaturas inscritas
+
+        sql = "SELECT " +
+              "p.\"Id\", " +
+              "p.periodo, " +
+              "COALESCE(p.monto_sem,0) AS monto_sem, " +
+              "COALESCE(p.nro_cuotas,0) AS nro_cuotas, " +
+              "COALESCE(p.periodo_divisas,false) AS periodo_divisas, " +
+              "COALESCE(p.valor_divisa,0) AS valor_divisa " +
+              "FROM periodo p " + 
+              "WHERE p.periodo = '" + periodo + "';";
+        
+        System.out.println("sql--->"+sql);
+        
+        //System.out.println("sql=====>"+sql);         
+        PreparedStatement ps;        
+        ps = conexion.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+
+        //System.out.println("rs.getString(\"periodo_divisas\")--->"+rs.getString("periodo_divisas"));
+
+        
+            optionsDivisasPeriodo =  "<select name=\"periodo_divisas\"  onchange=\"form.submit()\" id=\"periodo_divisas\" name=\"periodo_divisas\">" +
+                                     "<option value=\"lbN\" >No</option>" +
+                                     "<option value=\"lbS\" >Si</option>" +
+                                     "</select>";
+
+        if (rs.next()) {
+        
+            
+
+
+            
+            datosPeriodo = "<tr><td align=\"right\">Costo Período:</td> <td align=\"left\"> <input type=\"number\" id=\"monto_sem\" name=\"monto_sem\" pattern=\"[0-9]+([\\.,][0-9]+)?\" min=\"0\" max=\"999999999999999\" step=\"0.01\" value=\"" + rs.getString("monto_sem") + "\" align=\"center\"/></td> </tr>";
+            datosPeriodo = datosPeriodo + "<tr><td align=\"right\">Cantidad de Cuotas:</td> <td align=\"left\"> <input type=\"number\" id=\"nro_cuotas\" name=\"nro_cuotas\" pattern=\"[0-9]+([\\.,][0-9]+)?\" min=\"0\" max=\"99\" step=\"1\" value=\"" + rs.getString("nro_cuotas") + "\" align=\"center\"/></td> </tr>";
+            
+            
+            //if (periodo_divisas.equals("S")) {
+            //    estatus = rs.getString("estatus");
+            //}
+            
+            /*if (rs.getString("periodo_divisas")=="t") {
+                 = true;
+            }*/
+          
+            if (periodo_divisas==null || periodo_divisas.equalsIgnoreCase("")) {
+                if (rs.getString("periodo_divisas").equals("t")) {
+                    periodo_divisas = "S";
+                } else {
+                    periodo_divisas = "N";
+                }
+                
+            }
+            
+            //System.out.println("periodo_divisas="+periodo_divisas);
+            
+            switch(periodo_divisas) {
+                case "S" : optionsDivisasPeriodo = optionsDivisasPeriodo.replace("lbS\"", "lbS\" selected");
+                break;
+                default : optionsDivisasPeriodo = optionsDivisasPeriodo.replace("lbN\"", "lbN\" selected"); 
+                break;
+            }
+            
+            
+            datosPeriodo = datosPeriodo + "<tr><td  align=\"right\">Período en Divisas:</td> <td align=\"left\">"+ optionsDivisasPeriodo + "</td> </tr>";
+                        
+            
+            datosPeriodo = datosPeriodo + "<tr><td align=\"right\">Valor de la Divisa:</td> <td align=\"left\"> <input type=\"number\" id=\"valor_divisa\" name=\"valor_divisa\" pattern=\"[0-9]+([\\.,][0-9]+)?\" min=\"0\" max=\"999999999999999\" step=\"0.01\" value=\"" + rs.getString("valor_divisa") + "\" align=\"center\"/></td> </tr>";
+            
+        }
+        
+        conexion.close();
+        return datosPeriodo;
+    }
+    
+    
+     /**
+     * Método que busca las secciones creadas en un período.
+     * @param conexion
+     * @return
+     * @throws SQLException 
+     */
+    public boolean PeriodoExiste(Connection conexion)  throws SQLException {
+        String sql;
+        boolean existe = false;
+        
+        //Buscar las asignaturas inscritas
+
+        sql = "SELECT " +
+              "p.\"Id\", " +
+              "p.periodo, " +
+              "p.monto_sem, " +
+              "p.nro_cuotas, " +
+              "p.periodo_divisas, " +
+              "p.valor_divisa " +
+              "FROM periodo p " + 
+              "WHERE p.periodo = '" + periodo + "';";
+        
+        System.out.println("sql--->"+sql);
+        
+        //System.out.println("sql=====>"+sql);         
+        PreparedStatement ps;        
+        ps = conexion.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();    
+
+        if (rs.next()) {
+            existe = true;
+        }
+        
+        conexion.close();
+        return existe;
+    }
+        
+    
+    public String AdicionarPeriodo(Connection conexion)  throws SQLException {
+        String sql;
+        
+        try {
+              sql = "INSERT " +                    
+                    "INTO periodo " +
+                    "(periodo, fec_ini, fec_fin, descrip, estatus, fec_ini_insc, fec_fin_insc, fec_ini_raa, fec_fin_raa, id_grupo_horario, monto_sem, nro_cuotas, valor_divisa, periodo_divisas) " +
+                    "VALUES " +
+                    "('" + periodo + "', '" + 
+                      fec_ini + "', '" + 
+                      fec_fin + "', '" + 
+                      descrip + "', '" + 
+                      estatus + "', '" + 
+                      fec_ini_insc + "', '" + 
+                      fec_fin_insc + "', '" + 
+                      fec_ini_raa + "', '" + 
+                      fec_fin_raa + "', " + 
+                      id_grupo_horario + ", " + 
+                      monto_sem + ", " + 
+                      nro_cuotas + ", " + 
+                      valor_divisa + ", ";
+                      if (periodo_divisas.equals("S")) {
+                         sql = sql + "true"; 
+                      } else {
+                         sql = sql + "false"; 
+                      }
+                      sql = sql + ");";
+            
+              System.out.println("INSERT---->"+sql);
+              PreparedStatement ps = conexion.prepareStatement(sql);
+            ps.executeUpdate();
+        
+            conexion.close();
+            return "Registro Guardado.";
+            
+        } catch (Exception e) {
+            conexion.close();
+            return e.getMessage();
+        }
+        
+    }
+    
+
+
+    public String ActualizarPeriodo(Connection conexion)  throws SQLException {
+        String sql;
+        
+        try {
+              sql = "UPDATE " +                    
+                    "periodo " +
+                    "SET fec_ini = '" + fec_ini + "', " + 
+                    "fec_fin = '" + fec_fin +"', " +
+                    "descrip = '" + descrip +"', " +
+                    "estatus = '" + estatus +"', " +
+                    "fec_ini_insc = '" + fec_ini_insc +"', " +
+                    "fec_fin_insc = '" + fec_fin_insc +"', " +
+                    "fec_ini_raa = '" + fec_ini_raa +"', " +
+                    "fec_fin_raa = '" + fec_fin_raa +"', " +
+                    "id_grupo_horario = " + id_grupo_horario +", " +
+                    "monto_sem = " + monto_sem +", " +
+                    "nro_cuotas = " + nro_cuotas +", " +
+                    "valor_divisa = " + valor_divisa +", ";
+                    if (periodo_divisas.equals("S")) {
+                         sql = sql + "periodo_divisas = true "; 
+                      } else {
+                         sql = sql + "periodo_divisas = false "; 
+                      }
+                      
+                    sql = sql + "WHERE periodo = '" + periodo + "';";
+            
+              System.out.println("UPDATE---->"+sql);
+              PreparedStatement ps = conexion.prepareStatement(sql);
+            ps.executeUpdate();
+        
+            conexion.close();
+            return "Registro Guardado.";
+            
+        } catch (Exception e) {
+            conexion.close();
+            return e.getMessage();
+        }
+        
+    }
+
+
+
+    
+         /**
+     * Método que busca las secciones creadas en un período.
+     * @param conexion
+     * @return
+     * @throws SQLException 
+     */
+    public String BuscarDatosHorariosPeriodo(Connection conexion)  throws SQLException {
+        String sql;
+        String optionsHorariosPeriodo = "";
+        
+        //Buscar las asignaturas inscritas
+
+
+        
+        sql = "SELECT distinct \"Id\", " + 
+               "descripcion, " + 
+                "duracion, " + 
+                "tiempo, " + 
+                "nombre_lapso, " + 
+                "(SELECT periodo " + 
+                "FROM periodo p  " + 
+                "WHERE p.id_grupo_horario = hg.\"Id\" AND p.periodo='"+periodo+"') AS periodo " + 
+                "FROM horario_grupo hg ";
+        
+              
+        System.out.println("sql--->"+sql);
+        
+        //System.out.println("sql=====>"+sql);         
+        PreparedStatement ps;        
+        ps = conexion.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        //System.out.println("rs.getString(\"periodo_divisas\")--->"+rs.getString("periodo_divisas"));
+
+        optionsHorariosPeriodo =  "<select name=\"id_grupo_horario\"  onchange=\"form.submit()\" id=\"id_grupo_horario\"> ";
+
+        
+        while (rs.next()) {
+            
+            if (id_grupo_horario == null || id_grupo_horario == 0) {                    
+                //&& rs.getString("periodo")!=null) {
+                if (rs.getString("periodo")!=null) {
+                   optionsHorariosPeriodo = optionsHorariosPeriodo + "<option value=\""+rs.getString("Id").toString()+"\" selected >"+rs.getString("descripcion")+"</option>";  
+                } else {
+                    optionsHorariosPeriodo = optionsHorariosPeriodo + "<option value=\""+rs.getString("Id").toString()+"\" >"+rs.getString("descripcion")+"</option>";
+                }
+            } else {
+                if (id_grupo_horario==rs.getInt("Id")) {
+                   optionsHorariosPeriodo = optionsHorariosPeriodo + "<option value=\""+rs.getString("Id").toString()+"\" selected >"+rs.getString("descripcion")+"</option>"; 
+                } else {
+                    optionsHorariosPeriodo = optionsHorariosPeriodo + "<option value=\""+rs.getString("Id").toString()+"\" >"+rs.getString("descripcion")+"</option>";
+                } 
+            }
+            
+        }
+        
+        optionsHorariosPeriodo = optionsHorariosPeriodo + "</select>";
+        
+        System.out.println(optionsHorariosPeriodo);
+        
+        conexion.close();
+        return optionsHorariosPeriodo;
+    }
+    
     
 }
