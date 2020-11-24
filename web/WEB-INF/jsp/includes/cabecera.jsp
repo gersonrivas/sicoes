@@ -47,6 +47,7 @@
                     out.println("</ul>");
                     out.println("</li>");
                 }
+
                 // Proceso Académico para Profesores
                 if (tipoUsuario.equals("P")) { 
                     out.println("<li>");
@@ -65,13 +66,13 @@
                 }
                 
                                 
-                // Proceso Académico para Analístas de Registro y Control y Super Usuario
-                if (tipoUsuario.equals("R") || tipoUsuario.equals("S")) {  
+                // Proceso Académico para Analístas de Registro y Control, Super Usuario y Coordinadores
+                if (tipoUsuario.equals("R") || tipoUsuario.equals("S") || tipoUsuario.equals("C")) {  
                     out.println("<li>");
                     out.println("<a href=\"#\">Inscripciones</a>"); 
                     out.println("<ul>");
                     
-                    if (tipoUsuario.equals("S")) out.println("<li><a href=\"buscarAlumnoCedulaPeriodoAdmin.do\" onclick=opcionMenu('opcion1');>Inscripción Alumno</a></li>");
+                    if (tipoUsuario.equals("S") || tipoUsuario.equals("C")) out.println("<li><a href=\"buscarAlumnoCedulaPeriodoAdmin.do\" onclick=opcionMenu('opcion1');>Inscripción Alumno</a></li>");
                     out.println("<li><a href=\"construccion.do\" onclick=opcionMenu('opcion1');>Retiro de Asignatura</a></li>");
                     out.println("<li><a href=\"construccion.do\" onclick=opcionMenu('opcion1');>Adición de Asignatura</a></li>");                   
                     
@@ -97,7 +98,7 @@
                     out.println("<a href=\"#\">Registros</a>");
                     out.println("<ul>");
                     out.println("<li><a href=\"recordNotas.do\" onclick=opcionMenu(\"opcion1\");>Record de Notas</a></li>");
-                    if (tipoUsuario.equals("S")) out.println("<li><a href=\"seleccionProfesorAsignaturaSeccion.do\" onclick=opcionMenu('opcion1');>Notas</a></li>");
+                    if (tipoUsuario.equals("S") || tipoUsuario.equals("C")) out.println("<li><a href=\"seleccionProfesorAsignaturaSeccion.do\" onclick=opcionMenu('opcion1');>Notas</a></li>");
                     out.println("</ul>");    
                     out.println("</li>");
                     
@@ -123,7 +124,7 @@
         	out.println("<li><a href=\"#\">Proceso Administrativo</a>");
         	out.println("<ul class=\"sub_menu\">");
                 //Proceso Administrativo para Alumnos
-                if (tipoUsuario.equals("A") || tipoUsuario.equals("S")) {  
+                if (tipoUsuario.equals("A") || tipoUsuario.equals("S") || tipoUsuario.equals("C")) {  
                     out.println("<li><a href=\"construccion.do\"onclick=cambiarContenido('texto')>Inscripción</a></li>");
                     out.println("<li><a href=\"construccion.do\">Solicitudes</a></li>");
                 }
@@ -132,11 +133,18 @@
                 
                 //FIN MENU ADMINISTRATIVO
                 
-                if (tipoUsuario.equals("S")) {
+                //ADMINISTRACION DE SISTEMAS PARA SUPERUSUARIO y COORDINADORES
+                if (tipoUsuario.equals("S") || tipoUsuario.equals("C")) {
                     out.println("<li><a href=\"#\">Administración del Sistema</a>");
                     out.println("<ul class=\"sub_menu\">");
                 // Proceso Administración del Sistema para SuperUsuario
                 //if (tipoUsuario.equals("S")) {
+
+                    out.println(" <li>");
+                    out.println("	<a href=\"configurarPeriodo.do\">Configuración de Períodos</a> ");
+                    out.println(" </li> ");
+                    
+                    
                     out.println(" <li>");
                     out.println("	<a href=\"usuariosAdmin.do\">Usuarios</a> ");
                     out.println(" </li> ");
