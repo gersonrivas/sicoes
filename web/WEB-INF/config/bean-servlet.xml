@@ -28,6 +28,7 @@
         <!-- Programación de Horarios de Registro y Control -->
         <bean id="asignaturaSeccionAulaController" class="com.iupg.sicoes.controlador.AsignaturaSeccionAulaController" />
         <bean id="horariosProfesorController" class="com.iupg.sicoes.controlador.HorariosProfesorController" />
+        <bean id="alumnosInscritosController" class="com.iupg.sicoes.controlador.AlumnosInscritosController" />
         <!-- Registro y Control -->
         <bean id="recordNotasController" class="com.iupg.sicoes.controlador.RecordNotasController" />
         <bean id="notasProfesorSeccionController" class="com.iupg.sicoes.controlador.NotasProfesorSeccionController" />
@@ -41,6 +42,7 @@
         <!-- Perfil Administrativo del Sistema -->
         <bean id="usuariosAdminController" class="com.iupg.sicoes.controlador.UsuariosAdminController" />
         <bean id="editarUsuarioAdminController" class="com.iupg.sicoes.controlador.EditarUsuarioAdminController" />
+        <bean id="configurarPeriodoController" class="com.iupg.sicoes.controlador.ConfigurarPeriodoController" />
         <!-- En construcción -->
         <bean id="construccionController" class="com.iupg.sicoes.controlador.ConstruccionController" />
         <!-- Fin Beans -->
