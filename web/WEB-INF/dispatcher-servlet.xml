@@ -48,8 +48,11 @@
                 <prop key="pasarAGrado.do">pasarAGradoController</prop>
                 
                 <prop key="xgraduadoDetalle.do">xgraduadoDetalleController</prop>
+                <prop key="alumnosInscritos.do">alumnosInscritosController</prop>
                 
                 <prop key="graduado.do">graduadoController</prop>
+                <prop key="configurarPeriodo.do">configurarPeriodoController</prop>
+                
                 <prop key="construccion.do">construccionController</prop>
             </props>
         </property>
