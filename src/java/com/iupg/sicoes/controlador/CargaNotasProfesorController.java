@@ -172,7 +172,7 @@ public class CargaNotasProfesorController extends AbstractController {
                                 SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration(); 
                                 configuration.setPermissions(PdfWriter.AllowCopy | PdfWriter.AllowPrinting); 
                                 exporter.setConfiguration(configuration); 
-                                exporter.exportReport(); 
+                                exporter.exportReport();
                                 // Fin Exportar
                                     
                                 // Enviar por Correo        
@@ -240,7 +240,7 @@ public class CargaNotasProfesorController extends AbstractController {
                     misession.setAttribute("encabezadoEvaluacionSession", encabezado);                    
                     
                     String cuerpo = daoProfesor.BuscarDetalleEvaluacion(daoConexion.ConexionBD(),"readonly");
-                    misession.setAttribute("detalleEvaluacionSession", cuerpo);                    
+                    misession.setAttribute("detalleEvaluacionSession", cuerpo);
 
                 }
             } else {
