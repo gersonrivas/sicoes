@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f2fc29cc-3b82-4bff-8693-e4b4e58cb54b">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="336"/>
+	<property name="ireport.y" value="485"/>
 	<style name="Text Body"/>
 	<style name="table">
 		<box>
@@ -35,100 +35,101 @@
 	<parameter name="LOGO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
-  alumno.cedula, 
-  alumno.apellidos||', '||alumno.nombres AS apellidos_nombres, 
-  alumno.tel_hab, 
-  alumno.tel_ofc, 
-  alumno.tel_cel, 
-  alumno.id_usu, 
-  usuario.ident_correo, 
-  usuario."Id", 
-  turno.nomb_turno, 
-  especialidad.nomb_espec, 
-  inscripcion_alumno.periodo, 
-  to_char(inscripcion_alumno.fec_hor_act, 'DD/MM/YYYY HH12:MI:SS AM') AS fec_hor_act, 
-  inscripcion_alumno_detalle.cod_mat, 
-  inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur, 
-  materia_espec_aula_seccion_turno.seccion,
-  materia_espec_aula_seccion_turno.sede, 
-  materia_espec_aula_seccion_turno.aula,
-  materia.descrip_mat,
-  materia_espec.uc,
-  periodo.fec_ini,
-  horario.dia,
-  MIN(horario.hora_ini) AS hora_ini,
-  MAX(horario.hora_fin) AS hora_fin
-FROM 
-  public.alumno, 
-  public.especialidad, 
-  public.turno, 
-  public.inscripcion_alumno, 
-  public.inscripcion_alumno_detalle, 
-  public.materia,
-  public.materia_espec_aula_seccion_turno, 
-  public.usuario,
-  public.materia_espec,
-  public.periodo,
-  public.horario,
-  public.profesor_horario
-WHERE 
-  alumno.id_turno = turno."Id" AND
-  alumno.id_especial = especialidad."Id" AND
-  alumno.cedula = inscripcion_alumno.cedula AND
-  inscripcion_alumno.cedula = inscripcion_alumno_detalle.cedula AND
-  inscripcion_alumno.periodo = inscripcion_alumno_detalle.periodo AND
-  inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur =  materia_espec_aula_seccion_turno."Id" AND
-  usuario."Id" = alumno.id_usu AND
-  inscripcion_alumno_detalle.cod_mat = materia.cod_mat AND
-  materia_espec.cod_mat = materia.cod_mat AND
-  materia_espec.id_espec = materia_espec_aula_seccion_turno.id_espec AND  
-  alumno.cedula = $P{CEDULA} AND
-  inscripcion_alumno_detalle.periodo = $P{PERIODO} AND
-  inscripcion_alumno_detalle.periodo = periodo.periodo AND
-  inscripcion_alumno_detalle.estatus IN ('I','D') AND 
-  -- agregado
-  materia_espec_aula_seccion_turno."Id"=inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur AND
-  profesor_horario.id_mat_espec_aula_secc_tur=materia_espec_aula_seccion_turno."Id" AND
-  horario."Id"=profesor_horario.id_horario
-  GROUP BY   alumno.cedula, 
-  alumno.apellidos||', '||alumno.nombres, 
-  alumno.tel_hab, 
-  alumno.tel_ofc, 
-  alumno.tel_cel, 
-  alumno.id_usu, 
-  usuario.ident_correo, 
-  usuario."Id", 
-  turno.nomb_turno, 
-  especialidad.nomb_espec, 
-  inscripcion_alumno.periodo, 
-  to_char(inscripcion_alumno.fec_hor_act, 'DD/MM/YYYY HH12:MI:SS AM'), 
-  inscripcion_alumno_detalle.cod_mat, 
-  inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur, 
-  materia_espec_aula_seccion_turno.seccion,
-  materia_espec_aula_seccion_turno.sede, 
-  materia_espec_aula_seccion_turno.aula,
-  materia.descrip_mat,
-  materia_espec.uc,
-  periodo.fec_ini,
-  horario.dia
-  ORDER BY alumno.cedula, 
-  alumno.apellidos||', '||alumno.nombres, 
-  alumno.tel_hab, 
-  alumno.tel_ofc, 
-  alumno.tel_cel, 
-  alumno.id_usu, 
-  usuario.ident_correo, 
-  usuario."Id", 
-  turno.nomb_turno, 
-  especialidad.nomb_espec, 
-  inscripcion_alumno.periodo, 
-  to_char(inscripcion_alumno.fec_hor_act, 'DD/MM/YYYY HH12:MI:SS AM'), 
-  inscripcion_alumno_detalle.cod_mat, 
-  inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur, 
-  materia_espec_aula_seccion_turno.seccion,
-  materia_espec_aula_seccion_turno.sede, 
-  materia_espec_aula_seccion_turno.aula,
-  materia.descrip_mat;]]>
+     alumno.cedula AS cedula,
+     alumno.apellidos||', '||alumno.nombres AS apellidos_nombres,
+     alumno.tel_hab AS tel_hab,
+     alumno.tel_ofc AS tel_ofc,
+     alumno.tel_cel AS tel_cel,
+     alumno.id_usu AS id_usu,
+     usuario.ident_correo AS ident_correo,
+     usuario."Id" AS "Id",
+     turno.nomb_turno AS nomb_turno,
+     especialidad.nomb_espec AS nomb_espec,
+     inscripcion_alumno.periodo AS periodo,
+     to_char(inscripcion_alumno.fec_hor_act,'DD/MM/YYYY HH12:MI:SS AM') AS fec_hor_act,
+     inscripcion_alumno_detalle.cod_mat AS cod_mat,
+     inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur AS id_mat_espec_aula_secc_tur,
+     materia_espec_aula_seccion_turno.seccion AS seccion,
+     materia_espec_aula_seccion_turno.sede AS sede,
+     materia_espec_aula_seccion_turno.aula AS aula,
+     materia.descrip_mat AS descrip_mat,
+     materia_espec.uc AS uc,
+     periodo.fec_ini AS fec_ini,
+     horario.dia AS dia,
+     MIN(horario.hora_ini) AS hora_ini,
+     MAX(horario.hora_fin) AS hora_fin
+FROM
+     "public"."alumno",
+     "public"."especialidad",
+     "public"."turno",
+     "public"."inscripcion_alumno",
+     "public"."inscripcion_alumno_detalle",
+     "public"."materia",
+     "public"."materia_espec_aula_seccion_turno",
+     "public"."usuario",
+     "public"."materia_espec",
+     "public"."periodo",
+     "public"."horario",
+     "public"."profesor_horario"
+WHERE
+     alumno.id_turno = turno."Id"
+ AND alumno.id_especial = especialidad."Id"
+ AND alumno.cedula = inscripcion_alumno.cedula
+ AND inscripcion_alumno.cedula = inscripcion_alumno_detalle.cedula
+ AND inscripcion_alumno.periodo = inscripcion_alumno_detalle.periodo
+ AND inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur = materia_espec_aula_seccion_turno."Id"
+ AND usuario."Id" = alumno.id_usu
+ AND inscripcion_alumno_detalle.cod_mat = materia.cod_mat
+ AND materia_espec.cod_mat = materia.cod_mat
+ AND materia_espec.id_espec = materia_espec_aula_seccion_turno.id_espec
+ AND alumno.cedula = $P{CEDULA}
+ AND inscripcion_alumno_detalle.periodo = $P{PERIODO}
+ AND inscripcion_alumno_detalle.periodo = periodo.periodo
+ AND inscripcion_alumno_detalle.estatus IN ('I','D')
+ AND materia_espec_aula_seccion_turno."Id" = inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur
+ AND profesor_horario.id_mat_espec_aula_secc_tur = materia_espec_aula_seccion_turno."Id"
+ AND horario."Id" = profesor_horario.id_horario
+GROUP BY
+     alumno.cedula,
+     alumno.apellidos||', '||alumno.nombres,
+     alumno.tel_hab,
+     alumno.tel_ofc,
+     alumno.tel_cel,
+     alumno.id_usu,
+     usuario.ident_correo,
+     usuario."Id",
+     turno.nomb_turno,
+     especialidad.nomb_espec,
+     inscripcion_alumno.periodo,
+     to_char(inscripcion_alumno.fec_hor_act,'DD/MM/YYYY HH12:MI:SS AM'),
+     inscripcion_alumno_detalle.cod_mat,
+     inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur,
+     materia_espec_aula_seccion_turno.seccion,
+     materia_espec_aula_seccion_turno.sede,
+     materia_espec_aula_seccion_turno.aula,
+     materia.descrip_mat,
+     materia_espec.uc,
+     periodo.fec_ini,
+     horario.dia
+ORDER BY
+     alumno.cedula ASC,
+     alumno.apellidos ASC,
+     alumno.tel_hab ASC,
+     alumno.tel_ofc ASC,
+     alumno.tel_cel ASC,
+     alumno.id_usu ASC,
+     usuario.ident_correo ASC,
+     usuario."Id" ASC,
+     turno.nomb_turno ASC,
+     especialidad.nomb_espec ASC,
+     inscripcion_alumno.periodo ASC,
+     to_char(inscripcion_alumno.fec_hor_act,'DD/MM/YYYY HH12:MI:SS AM') ASC,
+     inscripcion_alumno_detalle.cod_mat ASC,
+     inscripcion_alumno_detalle.id_mat_espec_aula_secc_tur ASC,
+     materia_espec_aula_seccion_turno.seccion ASC,
+     materia_espec_aula_seccion_turno.sede ASC,
+     materia_espec_aula_seccion_turno.aula ASC,
+     materia.descrip_mat ASC]]>
 	</queryString>
 	<field name="cedula" class="java.lang.Long"/>
 	<field name="apellidos_nombres" class="java.lang.String"/>
@@ -185,6 +186,12 @@ WHERE
 	</field>
 	<variable name="fecha_ini" class="java.util.Date">
 		<variableExpression><![CDATA[$F{fec_ini}.toString()]]></variableExpression>
+	</variable>
+	<variable name="sede_1" class="java.lang.Integer" resetType="Page" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{sede}]]></variableExpression>
+	</variable>
+	<variable name="sede_2" class="java.lang.Integer" resetType="Page" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{sede}]]></variableExpression>
 	</variable>
 	<group name="GrupoHorario">
 		<groupExpression><![CDATA[$F{cod_mat}]]></groupExpression>
@@ -420,28 +427,28 @@ WHERE
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField>
-				<reportElement x="182" y="0" width="40" height="12" uuid="87bb3c34-83db-48be-9c6e-213d6a218022"/>
+				<reportElement x="182" y="0" width="40" height="12" forecolor="#FFFFFF" uuid="87bb3c34-83db-48be-9c6e-213d6a218022"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dia}]]></textFieldExpression>
 			</textField>
 			<textField pattern="h:mm a">
-				<reportElement x="225" y="0" width="62" height="12" uuid="893855a3-b1b2-4d1b-828b-4df935d6245b"/>
+				<reportElement x="225" y="0" width="62" height="12" forecolor="#FFFFFF" uuid="893855a3-b1b2-4d1b-828b-4df935d6245b"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{hora_ini}]]></textFieldExpression>
 			</textField>
 			<textField pattern="h:mm a">
-				<reportElement x="291" y="0" width="62" height="12" uuid="d157b681-4324-4f70-99db-4374e0277251"/>
+				<reportElement x="291" y="0" width="62" height="12" forecolor="#FFFFFF" uuid="d157b681-4324-4f70-99db-4374e0277251"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{hora_fin}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="138" y="0" width="43" height="12" uuid="5d12f570-3a47-497d-bd02-643e1d64ef91"/>
+				<reportElement mode="Opaque" x="138" y="0" width="43" height="12" forecolor="#FFFFFF" uuid="5d12f570-3a47-497d-bd02-643e1d64ef91"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
@@ -450,19 +457,14 @@ WHERE
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="113" splitType="Stretch">
+		<band height="16" splitType="Stretch">
 			<line>
 				<reportElement x="4" y="2" width="549" height="1" uuid="54bfb010-d06e-49a1-9179-981d6eeea35d"/>
 			</line>
-			<textField>
-				<reportElement x="4" y="3" width="547" height="105" uuid="b249d060-95b0-40f1-b8b6-715a64acd345"/>
-				<textElement textAlignment="Justified"/>
-				<textFieldExpression><![CDATA["1.- La fecha de inicio de clases, el "  + new SimpleDateFormat("dd/MM/yyyy").format($F{fec_ini}) + ". \n2.- El estudiante que por cualquier causa desee retirar o adicionar alguna de las asignaturas inscritas para ser cursadas durante el semestre o período, podrá retirarla o cambiarla en la primera semana de clases. \n3.- El Servicio Comunitario es un requisito para la obtención del Título de Educación Superior, Ley de Servicio Comunitario del Estudiante de Educación Superior.   Gaceta Oficial N° 38.272 del 14 de Septiembre de 2005. \n4.- Una vez formalizada la inscripción, bajo ninguna circunstancia se realizará devolución de dinero."]]></textFieldExpression>
-			</textField>
 		</band>
 	</columnFooter>
 	<pageFooter>
-		<band height="22" splitType="Stretch">
+		<band height="25" splitType="Stretch">
 			<textField>
 				<reportElement x="394" y="1" width="115" height="20" uuid="7a523225-fea6-45e1-9930-1811149697e5"/>
 				<textElement textAlignment="Right"/>
@@ -472,9 +474,19 @@ WHERE
 				<reportElement x="509" y="1" width="40" height="20" uuid="8e21c4e9-d2d5-4f10-b018-90a0d1e90bc1"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="4" y="1" width="100" height="20" uuid="c516c2e7-7aa8-403e-8d8c-7ab3be30adc6"/>
+				<textFieldExpression><![CDATA[$F{sede}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="10" splitType="Stretch"/>
+		<band height="215" splitType="Stretch">
+			<textField>
+				<reportElement x="4" y="0" width="544" height="207" uuid="b249d060-95b0-40f1-b8b6-715a64acd345"/>
+				<textElement textAlignment="Justified"/>
+				<textFieldExpression><![CDATA["1.- Respetando las exigencias del MPPEU, las clases serán dictadas totalmente a distancia, de acuerdo a la planificación académica y evaluación de los aprendizajes que los docentes ofrezcan, siguiendo los lineamientos formulados por el Consejo Directivo.\n\n2.- La fecha de inicio de clases, el "  + new SimpleDateFormat("dd/MM/yyyy").format($F{fec_ini}) + ". \n\n3.- De acuerdo a lineamientos del ente rector, por este período no se inscribirán las actividades especiales  (Servicio Comunitario, Pasantías y Trabajo Especial de Grado), estas deberán ser inscritas y cursadas en el período siguiente inmediato (septiembre a diciembre del año 2020), sin prelación de las asignaturas que vaya a inscribir al periodo correspondiente.\n\n4.- El estudiante que por cualquier causa desee retirar alguna de las asignaturas inscritas para ser cursadas durante el período podrá retirarla notificando a los correos electrónicos: La Hoyada cordacdlh@gmail.com; Sabana Grande: cordacdsg@gmail.com; una vez reciba la planilla de inscripción.\n\n5.- Una vez formalizada la inscripción, bajo ninguna circunstancia se realizará devolución de dinero."]]></textFieldExpression>
+			</textField>
+		</band>
 	</summary>
 </jasperReport>
