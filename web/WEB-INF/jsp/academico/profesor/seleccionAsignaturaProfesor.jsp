@@ -54,7 +54,21 @@
                                         ${mensajeError}
                                         <div id="sessionTimer"></div>
                                         
-                                        <input name="action" type="submit" id="consultar" value="Cargar" />
+                                        
+                                        <% String tipoUsuario = (String) session.getAttribute("tipoUsuSession");      
+                
+                                        if (tipoUsuario.equals("S") || tipoUsuario.equals("P")) {
+                                            out.println("<input name=\"action\" type=\"submit\" id=\"consultar\" value=\"Cargar\" />");
+                                        }  else {
+                                            out.println("<input name=\"action\" type=\"submit\" id=\"consultar\" value=\"Imprimir\" />");
+                                        }
+
+                                        %>
+                                        
+                                        <!--input name="action" type="submit" id="consultar" value="Cargar" /-->
+                                        
+                                        
+                                        
                                         <input name="action" type="submit" id="salir" value="Salir" />
                                     </div>
                                 </td>
