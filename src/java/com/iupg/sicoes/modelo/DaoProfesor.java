@@ -693,7 +693,43 @@ public class DaoProfesor extends Profesor {
     }
     
     
-   
+       /**
+     * Método que busca alumnos Inscritos con un Profesor.
+     * @param conexion
+     * @return
+     * @throws SQLException 
+     */
+    public String BuscarAlumnosInscritos(Connection conexion)  throws SQLException {
+        String sql;
+        String listaAlumnosInscritos = "";
+        
+        //Buscar los alumnos Inscritos
+
+            sql = "SELECT a.cedula, apellidos, nombres, u.ident_correo, COALESCE(tel_ofc,'00-0') AS tel_ofc, COALESCE(tel_cel,'00-0') AS tel_cel, COALESCE(tel_hab,'00-0') AS tel_hab " +
+                  "FROM inscripcion_alumno_detalle iad " +
+                  "INNER JOIN alumno a on (iad.cedula = a.cedula) " +
+                  "INNER JOIN usuario u on (u.\"Id\"=a.id_usu) " +
+                  "WHERE iad.id_mat_espec_aula_secc_tur = " + idMatEspAulSecTur + ";";
+            
+            
+        PreparedStatement ps;        
+        ps = conexion.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        while (rs.next()) {
+            listaAlumnosInscritos = listaAlumnosInscritos +   
+                    "<td align=\"center\">"+rs.getString("cedula")+"</td>"+
+                    "<td align=\"center\">"+rs.getString("apellidos")+"</td>"+
+                    "<td align=\"center\">"+rs.getString("nombres")+"</td>"+
+                    "<td align=\"center\">"+rs.getString("ident_correo")+"</td>"+
+                    "<td align=\"center\">"+rs.getString("tel_ofc")+"</td>"+
+                    "<td align=\"center\">"+rs.getString("tel_cel")+"</td>"+
+                    "<td align=\"center\">"+rs.getString("tel_hab")+"</td></tr>";            
+        }
+
+        conexion.close();
+        return listaAlumnosInscritos;
+    }
     
     
     
