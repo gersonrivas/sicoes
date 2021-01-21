@@ -46,7 +46,7 @@ public ConsultarInscripcionController() {
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws ServletException, Exception, ConfigurationException {
         //throw new UnsupportedOperationException("Not yet implemented");
         String mensaje = "";
-        String pagina = "principal/consultarInscripcion";
+        String pagina = "academico/registroControl/consultarInscripcion";
         HttpSession misession= request.getSession(); 
         daoConexion = new DaoConexion();
         DaoAlumno daoAlumno = new DaoAlumno((String) misession.getAttribute("cedulaUsuSession"));
