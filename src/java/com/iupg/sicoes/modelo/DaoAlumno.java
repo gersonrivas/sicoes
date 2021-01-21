@@ -195,7 +195,7 @@ public class DaoAlumno extends Alumno {
         ResultSet rs = ps.executeQuery();
         
         while (rs.next()) {
-            listaMaterias = listaMaterias + "<tr><td> <input type=\"checkbox\" name=\"materia\" id=\""+rs.getString("cod_mat")+"\" value=\""+rs.getString("cod_mat")+"\" onclick=\"deshabilitaSeccion(this);\">"+rs.getString("descrip_mat")+"</td><td align=\"center\">"+rs.getString("sem_ter")+"</td><td>"+BuscarSeccionAula(conexion, rs.getString("cod_mat"))+"</td><td><label id=\"lb"+rs.getString("cod_mat")+"\" >Seleccione la sección.</label></td><td align=\"center\">"+rs.getString("uc")+"</td> </tr>";            
+            listaMaterias = listaMaterias + "<tr><td align=\"center\"> <input type=\"checkbox\" name=\"materia\" id=\""+rs.getString("cod_mat")+"\" value=\""+rs.getString("cod_mat")+"\" onclick=\"deshabilitaSeccion(this);\">"+rs.getString("descrip_mat")+"</td><td align=\"center\">"+rs.getString("sem_ter")+"</td><td align=\"center\">"+BuscarSeccionAula(conexion, rs.getString("cod_mat"))+"</td><td align=\"center\"><label id=\"lb"+rs.getString("cod_mat")+"\" >Seleccione la sección.</label></td><td align=\"center\">"+rs.getString("uc")+"</td> </tr>";            
         }
         return listaMaterias;
     }
@@ -735,5 +735,114 @@ public class DaoAlumno extends Alumno {
         return selectEspecialidad;
     }
     
+
+
+    /**
+     * Método que busca la inscripción administrativa del alumno en el perído actual.
+     * @param conexion
+     * @return
+     * @throws SQLException 
+     */
+    public String BuscarPeriodoActualDelAlumno(Connection conexion) throws SQLException {
+        String sql;
+        String selectPeriodo = "";
+        String optionsPeriodo = "";
+        int i=0;
+        
+        selectPeriodo = "<select name=\"periodo\"  onchange=\"form.submit()\" id=\"periodo\" >"; 
+        if (cedula!="" && cedula!=null) {
+            sql = "SELECT " +
+                  "p.periodo, " +
+                  "p.fec_ini, " +
+                  "p.fec_fin, " +
+                  "p.descrip, " +
+                  "p.monto_sem, " +
+                  "p.id_grupo_horario, " +
+                  "p.nro_cuotas, " +
+                  "p.periodo_divisas, " +
+                  "p.valor_divisa, " +
+                  "t.nomb_turno, " +
+                  "hg.descripcion, " +
+                  "hg.nombre_lapso " +
+                  "FROM " +
+                  "public.alumno a " +
+                  "INNER JOIN public.turno t ON (a.id_turno = t.\"Id\") " +
+                  "INNER JOIN public.horario_grupo hg ON (t.id_grupo_horario = hg.\"Id\") " +
+                  "INNER JOIN public.periodo p ON (p.id_grupo_horario = hg.\"Id\") " +
+                  "WHERE " +
+                  "(NOW()::date BETWEEN fec_ini_insc::date AND fec_fin::date) AND " +
+                  "a.cedula = " + cedula + " AND " +
+                  "p.estatus = 'A'; ";
+             
+            PreparedStatement ps;        
+            ps = conexion.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+        
+
+            optionsPeriodo =  "<option value=\"lbElige\" selected>Elige";
+            while (rs.next()) {
+                i++;
+                if (periodo!=null) {
+                    if (periodo.equals(rs.getString("periodo"))) {
+                        optionsPeriodo = optionsPeriodo + "<option value=\""+rs.getString("periodo")+"\" selected>"+rs.getString("periodo");
+                    }
+                    else {    
+                        optionsPeriodo = optionsPeriodo + "<option value=\""+rs.getString("periodo")+"\" >"+rs.getString("periodo");
+                    }
+                } else optionsPeriodo = optionsPeriodo + "<option value=\""+rs.getString("periodo")+"\" >"+rs.getString("periodo");
+            }
+        
+        }        
+        if (i==0) {
+            optionsPeriodo =  "<option value=\"lbSinInscripcion\" selected>Sin Inscripción";
+        }
+        
+        selectPeriodo = selectPeriodo + optionsPeriodo + "</select>";
+        return selectPeriodo;        
+    }        
+    
+    
+     /**
+     * Método que busca las materias pendientes por cursar del alumno.
+     * @param conexion
+     * @return
+     * @throws SQLException 
+     */    
+    public String ListarPagosPeriodo(Connection conexion)  throws SQLException {
+        String sql;
+        String listaPagos = "";
+        
+        //Buscar las asignaturas que no estén aprobadas y que no prelen
+        sql = "SELECT   rp.cedula,  " +
+               "rp.periodo,  " +
+               "rp.fecha_pago, " +
+               "rp.fecha_reporte,  " +
+               "rp.monto, " +
+               "CASE WHEN rp.estatus='RE' THEN 'REPORTADO' " +
+               "WHEN rp.estatus='CO' THEN 'CONCILIADO' " +
+               "WHEN rp.estatus='AN' THEN 'ANULADO' " +
+               "WHEN rp.estatus='DI' THEN 'DIFERIDO' " +
+               "WHEN rp.estatus='DE' THEN 'DEBITADO' " +
+               "WHEN rp.estatus='SO' THEN 'SOBRANTE' " +
+               "END AS estatus, " +
+               "CASE WHEN rp.tipo_pago='MAT' THEN 'PAGO DE MATRICULA' " +
+               "WHEN rp.tipo_pago='DOC' THEN 'PAGO DE DOCUMENTO' " +
+               "WHEN rp.tipo_pago='OTR' THEN 'OTROS PAGOS' " +
+               "END AS tipo_pago, " +
+               "rp.comprobante " +
+               "FROM   reporte_pago rp  " +
+              " WHERE rp.cedula = " + cedula +  " AND " +
+              " rp.periodo = '" + periodo + "' " +
+              " ORDER BY rp.fecha_reporte; ";                
+                        
+        PreparedStatement ps;        
+        ps = conexion.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        while (rs.next()) {
+            listaPagos = listaPagos + "<tr><td align=\"center\"> <input type=\"checkbox\" name=\"fecha_pago\" id=\""+rs.getString("fecha_pago")+"\" align=\"center\" value=\""+rs.getString("fecha_pago")+"\" onclick=\"deshabilitaSeccion(this);\">"+rs.getString("fecha_pago")+"</td><td align=\"center\">"+rs.getString("comprobante")+"</td><td align=\"center\">"+rs.getString("monto")+"</td><td align=\"center\">"+rs.getString("fecha_reporte")+"</td><td align=\"center\">"+rs.getString("tipo_pago")+"</td><td align=\"center\">"+rs.getString("estatus")+"</td> </tr>";            
+        }
+        return listaPagos;
+    }
     
 }
