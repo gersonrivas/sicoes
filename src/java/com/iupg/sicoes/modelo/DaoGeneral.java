@@ -920,7 +920,6 @@ public class DaoGeneral extends General {
                   " AND meast.periodo = '"+periodo+"';";
             
         PreparedStatement ps;
-        System.out.println("sql-->"+sql);
         
         ps = conexion.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
@@ -1222,15 +1221,11 @@ public class DaoGeneral extends General {
               "FROM periodo p " + 
               "WHERE p.periodo = '" + periodo + "';";
         
-        System.out.println("sql--->"+sql);
-        
-        //System.out.println("sql=====>"+sql);         
         PreparedStatement ps;        
         ps = conexion.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
         
-        if (rs.next()) {
-            
+        if (rs.next()) {            
             datosPeriodo =  "<tr><td align=\"right\">Fecha Inicio:</td> <td align=\"left\">  <input type=\"date\" id=\"fec_ini\" name=\"fec_ini\" value=\"" + rs.getString("fec_ini").toString().substring(0,10) +"\" align=\"center\"/> </td> </tr>";
             datosPeriodo =  datosPeriodo + "<tr><td align=\"right\">Fecha Fin:</td> <td align=\"left\"> <input type=\"date\" id=\"fec_fin\" name=\"fec_fin\" value=\"" + rs.getString("fec_fin").toString().substring(0,10) + "\" align=\"center\"/></td> </tr>";
             datosPeriodo =  datosPeriodo + "<tr><td align=\"right\">Descripción:</td> <td align=\"left\"> <input type=\"text\" id=\"descrip\" name=\"descrip\" value=\"" + rs.getString("descrip") + "\" align=\"center\"/> </td> </tr>";
@@ -1244,7 +1239,6 @@ public class DaoGeneral extends General {
             if (estatus==null || estatus.equalsIgnoreCase("")) {
                 estatus = rs.getString("estatus");
             }
-            
             
             switch(estatus) {
                 case "A" : optionsEstatusPeriodo = optionsEstatusPeriodo.replace("lbA\"", "lbA\" selected");
@@ -1262,9 +1256,6 @@ public class DaoGeneral extends General {
             
             datosPeriodo =  datosPeriodo + "<tr><td align=\"right\">Fecha Inicio Retiro Asignaturas:</td> <td align=\"left\"> <input type=\"date\" id=\"fec_ini_raa\" name=\"fec_ini_raa\" value=\"" + rs.getString("fec_ini_raa").toString().substring(0,10) + "\" align=\"center\"/></td> </tr>";
             datosPeriodo =  datosPeriodo + "<tr><td align=\"right\">Fecha Fin Retiro Asignaturas:</td> <td align=\"left\"> <input type=\"date\" id=\"fec_fin_raa\" name=\"fec_fin_raa\" value=\"" + rs.getString("fec_fin_raa").toString().substring(0,10) + "\" align=\"center\"/></td> </tr>";
-      
-            
-            
             datosPeriodo =  datosPeriodo + "<tr><td align=\"right\">Horario del Período:</td> <td align=\"left\"> "+BuscarDatosHorariosPeriodo(conexion)+"</td> </tr>";
 
         }
@@ -1285,9 +1276,7 @@ public class DaoGeneral extends General {
         String datosPeriodo = "";
         String optionsDivisasPeriodo = "";
        
-        
         //Buscar las asignaturas inscritas
-
         sql = "SELECT " +
               "p.\"Id\", " +
               "p.periodo, " +
@@ -1298,62 +1287,38 @@ public class DaoGeneral extends General {
               "FROM periodo p " + 
               "WHERE p.periodo = '" + periodo + "';";
         
-        System.out.println("sql--->"+sql);
-        
-        //System.out.println("sql=====>"+sql);         
+
         PreparedStatement ps;        
         ps = conexion.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
-        
-
-        //System.out.println("rs.getString(\"periodo_divisas\")--->"+rs.getString("periodo_divisas"));
 
         
-            optionsDivisasPeriodo =  "<select name=\"periodo_divisas\"  onchange=\"form.submit()\" id=\"periodo_divisas\" name=\"periodo_divisas\">" +
-                                     "<option value=\"lbN\" >No</option>" +
-                                     "<option value=\"lbS\" >Si</option>" +
-                                     "</select>";
+        optionsDivisasPeriodo =  "<select name=\"periodo_divisas\"  onchange=\"form.submit()\" id=\"periodo_divisas\" name=\"periodo_divisas\">" +
+                                 "<option value=\"lbN\" >No</option>" +
+                                 "<option value=\"lbS\" >Si</option>" +
+                                 "</select>";
 
         if (rs.next()) {
-        
-            
-
-
             
             datosPeriodo = "<tr><td align=\"right\">Costo Período:</td> <td align=\"left\"> <input type=\"number\" id=\"monto_sem\" name=\"monto_sem\" pattern=\"[0-9]+([\\.,][0-9]+)?\" min=\"0\" max=\"999999999999999\" step=\"0.01\" value=\"" + rs.getString("monto_sem") + "\" align=\"center\"/></td> </tr>";
             datosPeriodo = datosPeriodo + "<tr><td align=\"right\">Cantidad de Cuotas:</td> <td align=\"left\"> <input type=\"number\" id=\"nro_cuotas\" name=\"nro_cuotas\" pattern=\"[0-9]+([\\.,][0-9]+)?\" min=\"0\" max=\"99\" step=\"1\" value=\"" + rs.getString("nro_cuotas") + "\" align=\"center\"/></td> </tr>";
-            
-            
-            //if (periodo_divisas.equals("S")) {
-            //    estatus = rs.getString("estatus");
-            //}
-            
-            /*if (rs.getString("periodo_divisas")=="t") {
-                 = true;
-            }*/
           
             if (periodo_divisas==null || periodo_divisas.equalsIgnoreCase("")) {
                 if (rs.getString("periodo_divisas").equals("t")) {
                     periodo_divisas = "S";
                 } else {
                     periodo_divisas = "N";
-                }
-                
+                }                
             }
-            
-            //System.out.println("periodo_divisas="+periodo_divisas);
-            
+                        
             switch(periodo_divisas) {
                 case "S" : optionsDivisasPeriodo = optionsDivisasPeriodo.replace("lbS\"", "lbS\" selected");
                 break;
                 default : optionsDivisasPeriodo = optionsDivisasPeriodo.replace("lbN\"", "lbN\" selected"); 
                 break;
-            }
-            
+            }            
             
             datosPeriodo = datosPeriodo + "<tr><td  align=\"right\">Período en Divisas:</td> <td align=\"left\">"+ optionsDivisasPeriodo + "</td> </tr>";
-                        
-            
             datosPeriodo = datosPeriodo + "<tr><td align=\"right\">Valor de la Divisa:</td> <td align=\"left\"> <input type=\"number\" id=\"valor_divisa\" name=\"valor_divisa\" pattern=\"[0-9]+([\\.,][0-9]+)?\" min=\"0\" max=\"999999999999999\" step=\"0.01\" value=\"" + rs.getString("valor_divisa") + "\" align=\"center\"/></td> </tr>";
             
         }
@@ -1374,7 +1339,6 @@ public class DaoGeneral extends General {
         boolean existe = false;
         
         //Buscar las asignaturas inscritas
-
         sql = "SELECT " +
               "p.\"Id\", " +
               "p.periodo, " +
@@ -1385,9 +1349,6 @@ public class DaoGeneral extends General {
               "FROM periodo p " + 
               "WHERE p.periodo = '" + periodo + "';";
         
-        System.out.println("sql--->"+sql);
-        
-        //System.out.println("sql=====>"+sql);         
         PreparedStatement ps;        
         ps = conexion.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();    
@@ -1551,6 +1512,37 @@ public class DaoGeneral extends General {
         conexion.close();
         return optionsHorariosPeriodo;
     }
+    
+ 
+    /**
+     * Método para eliminar Período
+     * @param conexion
+     * @return
+     * @throws SQLException 
+     */
+    public String EliminarPeriodo(Connection conexion)  throws SQLException {
+        String sql;        
+        
+        try {
+              sql = "DELETE " +
+              "FROM " +
+              "periodo " +
+              "WHERE periodo = '" + periodo + "';";
+                        
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ps.executeUpdate();
+        
+            conexion.close();
+            return "Registro Eliminado.";
+            
+        } catch (Exception e) {
+            conexion.close();
+            return e.getMessage();
+        }
+        
+    }
+    
+    
     
     
 }
