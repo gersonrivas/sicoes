@@ -22,6 +22,7 @@
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
             <props>
+                <!-- PROCESO ACADEMICO -->
                 <prop key="login.do">loginController</prop>		
 		<prop key="principal.do">principalController</prop>		
                 <prop key="register.do">registerController</prop>
@@ -52,6 +53,12 @@
                 
                 <prop key="graduado.do">graduadoController</prop>
                 <prop key="configurarPeriodo.do">configurarPeriodoController</prop>
+                
+                <!-- PROCESO ADMINISTRATIVO -->
+                <prop key="reportarPagosAdmon.do">reportarPagosController</prop>
+                <prop key="actualizarPago.do">actualizarPagoController</prop>
+                <!--prop key="consultarPagos.do">consultarPagosController</prop-->
+
                 
                 <prop key="construccion.do">construccionController</prop>
             </props>
