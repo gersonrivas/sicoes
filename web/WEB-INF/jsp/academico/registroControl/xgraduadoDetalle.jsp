@@ -34,7 +34,9 @@
                     <table border="1">
                         <thead>
                             <tr align="center">
-                                <th colspan="6" align="center">Graduado</th>
+                                <th colspan="6" align="center">
+                                    GRADUADO
+                                </th>
                             </tr>                                                       
                             
                         </thead>
