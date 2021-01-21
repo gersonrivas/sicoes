@@ -109,8 +109,6 @@
                     out.println("<li><a href=\"graduado.do\" onclick=opcionMenu('opcion1');>Graduado</a></li>");
 
                     
-                    
-                    
                     out.println("</ul>");
                     out.println("</li>");
                     
@@ -124,8 +122,15 @@
         	out.println("<li><a href=\"#\">Proceso Administrativo</a>");
         	out.println("<ul class=\"sub_menu\">");
                 //Proceso Administrativo para Alumnos
-                if (tipoUsuario.equals("A") || tipoUsuario.equals("S") || tipoUsuario.equals("C")) {  
-                    out.println("<li><a href=\"construccion.do\"onclick=cambiarContenido('texto')>Inscripción</a></li>");
+                if (tipoUsuario.equals("A")) {  
+                    //out.println("<li><a href=\"construccion.do\"onclick=cambiarContenido('texto')>Inscripción</a></li>");
+                    out.println("<li>");
+                    out.println("<a href=\"#\">Inscripciones</a>");                     
+                    out.println("<ul>");
+                    out.println("<li><a href=\"reportarPagosAdmon.do\" onclick=opcionMenu(\"opcion1\");>Notificación de Pagos</a></li>");
+                    out.println("<li><a href=\"construccion.do\">Consulta de Pagos</a></li>");
+                    out.println("</ul>");
+                    
                     out.println("<li><a href=\"construccion.do\">Solicitudes</a></li>");
                 }
         	out.println("</ul>");
