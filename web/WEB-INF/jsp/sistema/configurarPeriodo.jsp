@@ -194,10 +194,7 @@ function cambiarPestanna(pestannas,pestanna) {
                                         <li id="pestana2"><a href='javascript:cambiarPestanna(pestanas,pestana2);'>Administrativo</a></li>
                                         
                                     </ul>
-                                </div>
-
-                                
-                                
+                                </div>         
                                 
                                 <body onload="javascript:cambiarPestanna(pestanas,pestana1);">
 
