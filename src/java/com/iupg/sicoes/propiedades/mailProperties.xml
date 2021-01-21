@@ -23,11 +23,15 @@ and open the template in the editor.
         <!--property name="username" value="controlestudios@iupg.net.ve" /-->
         <!--property name="password" value="ryce1996" /-->
 
+        <!--property name="host" value="mail.iupg.com.ve" /-->
         <property name="host" value="smtp.gmail.com" />
+        <!--property name="port" value="465" /-->
         <property name="port" value="587" />
-        <property name="protocol"><value>smtp</value></property>
-        <property name="username" value="dilmarag.registrocontrol.iupg@gmail.com" />
-        <property name="password" value="dg04242188661" />
+        <!--property name="protocol"><value>smtp</value></property-->
+        <!--property name="username" value="controlestudios@iupg.com.ve" /-->
+        <property name="username" value="sicoes.iupg1@gmail.com" />
+        <!--property name="password" value="tigre_vinotinto*1996"/-->
+        <property name="password" value="5ANT1AG0" />
               
         <property name="javaMailProperties">
             <props>
@@ -36,6 +40,14 @@ and open the template in the editor.
                 <prop key="mail.smtp.starttls.enable">true</prop>
                 <!--prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop-->
                 <!--prop key="mail.smtp.ssl.enable">true</prop-->
+                
+                <!-- Agregado establecer parámetros al nuevo servidor SMTP -->
+                <!--prop key="mail.smtp.auth.plain.disable">false</prop-->
+                <!--prop key="mail.smtp.user">controlestudios@iupg.com.ve</prop-->
+                <!--prop key="mail.smtp.auth.mechanisms">PLAIN</prop-->
+                <!--prop key="mail.smtp.ssl.trust">mail.iupg.com.ve</prop-->
+                <!-- Fin Agregado -->
+                
                 <prop key="mail.debug">true</prop>
                 <prop key="mail.encoding">UTF-8</prop>
             </props>
