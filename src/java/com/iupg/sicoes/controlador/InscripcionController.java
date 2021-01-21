@@ -50,7 +50,7 @@ public InscripcionController() {
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws ServletException, Exception, ConfigurationException {
         //throw new UnsupportedOperationException("Not yet implemented");
         String mensaje = "";
-        String pagina = "principal/inscripcion";
+        String pagina = "academico/registroControl/inscripcion";
         HttpSession misession= request.getSession(); 
         daoConexion = new DaoConexion();
         DaoAlumno daoAlumno = new DaoAlumno((String) misession.getAttribute("cedulaUsuSession"));
@@ -83,6 +83,13 @@ public InscripcionController() {
             if (daoAlumno.BuscarDatosAlumno(daoConexion.ConexionBD())) {
                 misession.setAttribute("gerenciaSession", daoAlumno.getEspecialidad());
                 misession.setAttribute("turnoSession", daoAlumno.getTurno());
+                
+                if (daoAlumno.BuscarPeriodoInscriptoAdmin(daoConexion.ConexionBD())) {
+                            //pagina ="principal/incripcion";
+                            misession.setAttribute("periodoSession", daoAlumno.getPeriodo());
+                            //Buscar materias a inscribir
+                            //misession.setAttribute("incripcionAlumnoSession", daoAlumno.BuscarMateriasPorInscribir(daoConexion.ConexionBD()));
+                }
                 
                 //Variable Para validar el Turno
                 String codigoValidacionTurno = daoAlumno.BuscarCodigoValidacionTurno();
@@ -144,7 +151,10 @@ public InscripcionController() {
                                     //Fin Agregado
                                 }
                                 // Validar el choque de Materias                                
-                                mensaje=validaHorario.ValidarChoqueHorarios(horariosMaterias);                                
+                                if (!horariosMaterias.isEmpty() && horariosMaterias != null) {
+                                    mensaje=validaHorario.ValidarChoqueHorarios(horariosMaterias);
+                                }
+                                                                
                                 // Calcular la cantidad de Unidades de Crédito de las asignaturas seleccionadas.
                                 String cantidaUC = daoAlumno.VerificarUCInscritas(daoConexion.ConexionBD(), materiasSeleccionadas, daoAlumno.getCodEspecialidad());
                                 //Validar Unidades de Crédito sean las estipuladas en las reglas
