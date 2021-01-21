@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f2fc29cc-3b82-4bff-8693-e4b4e58cb54b">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="485"/>
+	<property name="ireport.x" value="368"/>
+	<property name="ireport.y" value="594"/>
 	<style name="Text Body"/>
 	<style name="table">
 		<box>
@@ -485,7 +485,7 @@ ORDER BY
 			<textField>
 				<reportElement x="4" y="0" width="544" height="207" uuid="b249d060-95b0-40f1-b8b6-715a64acd345"/>
 				<textElement textAlignment="Justified"/>
-				<textFieldExpression><![CDATA["1.- Respetando las exigencias del MPPEU, las clases serán dictadas totalmente a distancia, de acuerdo a la planificación académica y evaluación de los aprendizajes que los docentes ofrezcan, siguiendo los lineamientos formulados por el Consejo Directivo.\n\n2.- La fecha de inicio de clases, el "  + new SimpleDateFormat("dd/MM/yyyy").format($F{fec_ini}) + ". \n\n3.- De acuerdo a lineamientos del ente rector, por este período no se inscribirán las actividades especiales  (Servicio Comunitario, Pasantías y Trabajo Especial de Grado), estas deberán ser inscritas y cursadas en el período siguiente inmediato (septiembre a diciembre del año 2020), sin prelación de las asignaturas que vaya a inscribir al periodo correspondiente.\n\n4.- El estudiante que por cualquier causa desee retirar alguna de las asignaturas inscritas para ser cursadas durante el período podrá retirarla notificando a los correos electrónicos: La Hoyada cordacdlh@gmail.com; Sabana Grande: cordacdsg@gmail.com; una vez reciba la planilla de inscripción.\n\n5.- Una vez formalizada la inscripción, bajo ninguna circunstancia se realizará devolución de dinero."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["1.- Respetando las exigencias del MPPEU, las clases serán dictadas totalmente a distancia, de acuerdo a la planificación académica y evaluación de los aprendizajes que los docentes ofrezcan, siguiendo los lineamientos formulados por el Consejo Directivo.\n\n2.- La fecha de inicio de clases, el "  + new SimpleDateFormat("dd/MM/yyyy").format($F{fec_ini}) + ".\n\n3.- Una vez formalizada la inscripción, bajo ninguna circunstancia se realizará devolución de dinero."]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
