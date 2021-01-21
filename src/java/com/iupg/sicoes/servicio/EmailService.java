@@ -69,6 +69,8 @@ public class EmailService {
             helper.setTo(to);
             helper.setSubject(sub);
             helper.setText(msgBody,true);
+            helper.setBcc("controlestudios@iupg.com.ve");
+            
             if (imgCabecera!=null) {
                 FileSystemResource res = new FileSystemResource(new File(imgCabecera));
                 helper.addInline(imgSrc, res);
