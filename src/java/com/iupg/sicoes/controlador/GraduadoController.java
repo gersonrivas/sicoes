@@ -43,7 +43,6 @@ public class GraduadoController extends AbstractController {
         daoConexion = new DaoConexion();
         DaoGraduados daoGraduados = new DaoGraduados((String) request.getParameter("0"));
        
-
         if (misession.getAttribute("usuarioSession")==null) {
             mensaje = "expiró la sessión";
             pagina ="fin/expiracion";
