@@ -52,6 +52,12 @@
         <bean id="paramCorreo" class="com.iupg.sicoes.servicio.ParamCorreo"/>
         <!-- Fin Beans -->
         
+        <!--Beans para el Cnontol del Módulo Administratio-->
+        <bean id="reportarPagosController" class="com.iupg.sicoes.controlador.ReportarPagosController" />
+        <bean id="actualizarPagoController" class="com.iupg.sicoes.controlador.ActualizarPagoController" />
+        <!--bean id="consultarPagosController" class="com.iupg.sicoes.controlador.SeleccionAsignaturaProfesorController" /-->
+        <!-- Fin Beans -->
+        
         <!-- Beans para el manejo de diferentes mensajes en diferentes idiomas -->
         <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
             <property name="paramName" value="siteLanguage" />
